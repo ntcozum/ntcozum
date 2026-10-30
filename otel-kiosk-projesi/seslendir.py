@@ -9,9 +9,11 @@ okur ve şunları üretir:
   LOBI_Proje_Taslagi_Sesli.pdf  her sayfasına kendi ses dosyası gömülü PDF
 
 Kurulum:   pip install edge-tts pypdf pypdfium2 pillow imageio-ffmpeg
-Kullanım:  python seslendir.py
+           (çevrimdışı motor için ayrıca: sudo apt install espeak-ng mbrola mbrola-tr2)
+Kullanım:  python seslendir.py                  (Emel, internet gerekir)
+           python seslendir.py --motor mbrola   (çevrimdışı Türkçe kadın sesi)
            python seslendir.py --ses tr-TR-EmelNeural --hiz=-4%
-           python seslendir.py --test   (ses servisi olmadan, sessiz deneme)
+           python seslendir.py --test           (ses servisi olmadan, sessiz deneme)
 """
 import argparse
 import asyncio
@@ -75,6 +77,67 @@ async def seslendir(slaytlar, klasor, ses, hiz):
     return dosyalar
 
 
+# Çevrimdışı motor: espeak-ng metni ses birimlerine çevirir, MBROLA "tr2" (Türkçe kadın sesi) okur.
+# espeak'in tr2'de karşılığı olmayan birimleri en yakınıyla eşleştirilir; yoksa o sesler sessizleşir.
+OKUNUS = [
+    ("LOBİ", "Lobi"), ("PMS Lite", "pe me se layt"), (r"\bPIN\b", "pin"), ("check-in", "çek in"),
+    ("Flutter", "flatır"), ("premium", "premiyum"), (r"\be-(?=\w)", "e "),
+]
+TR2_KARSILIK = {"&": "e", "l/": "l", "L/": "L"}
+
+
+def mbrola_metni(metin):
+    for eski, yeni in OKUNUS:
+        metin = re.sub(eski, yeni, metin)
+    return metin
+
+
+def pho_duzelt(pho, aralik):
+    """Birimleri tr2'ye eşler ve tonlama aralığını genişletir (tekdüzeliği azaltır)."""
+    satirlar = [s.split() for s in pho.splitlines() if s.strip() and not s.startswith(";")]
+    perdeler = [float(v) for s in satirlar for v in s[3::2]]
+    ort = sum(perdeler) / len(perdeler)
+    cikti = []
+    for s in satirlar:
+        s[0] = TR2_KARSILIK.get(s[0], s[0])
+        for i in range(3, len(s), 2):
+            s[i] = str(round(min(340, max(130, ort + (float(s[i]) - ort) * aralik))))
+        cikti.append(" ".join(s))
+    return "\n".join(cikti) + "\n"
+
+
+def mbrola_seslendir(ffmpeg, slaytlar, klasor, hiz, aralik):
+    for arac in ("espeak-ng", "mbrola"):
+        if not shutil.which(arac):
+            sys.exit(f"{arac} bulunamadı. Kurmak için: sudo apt install espeak-ng mbrola mbrola-tr2")
+    veritabani = next((p for p in ("/usr/share/mbrola/tr2/tr2", "/usr/share/mbrola/voices/tr2") if Path(p).exists()), None)
+    if not veritabani:
+        sys.exit("MBROLA tr2 sesi bulunamadı. Kurmak için: sudo apt install mbrola-tr2")
+    dosyalar = []
+    for no, _, metin in slaytlar:
+        hedef = klasor / f"slayt_{no:02d}.mp3"
+        imza = hashlib.sha1(f"mbrola|{hiz}|{aralik}|{metin}".encode()).hexdigest()
+        imza_dosyasi = hedef.with_suffix(".imza")
+        if not (hedef.exists() and imza_dosyasi.exists() and imza_dosyasi.read_text() == imza):
+            print(f"  ses üretiliyor: slayt {no:02d}")
+            pho = subprocess.run(
+                ["espeak-ng", "-v", "mb-tr2", "-q", "-s", str(hiz), "--pho"],
+                input=mbrola_metni(metin), capture_output=True, text=True, check=True,
+            ).stdout
+            with tempfile.TemporaryDirectory() as g:
+                pho_dosyasi, wav = Path(g) / "s.pho", Path(g) / "s.wav"
+                pho_dosyasi.write_text(pho_duzelt(pho, aralik))
+                subprocess.run(["mbrola", "-e", veritabani, str(pho_dosyasi), str(wav)], check=True, capture_output=True)
+                calistir(
+                    ffmpeg, "-i", str(wav),
+                    "-af", "highpass=f=70,acompressor=threshold=-20dB:ratio=2:attack=5:release=120,loudnorm=I=-16:TP=-1.5:LRA=11",
+                    "-ar", "44100", "-ac", "1", "-c:a", "libmp3lame", "-b:a", "96k", str(hedef),
+                )
+            imza_dosyasi.write_text(imza)
+        dosyalar.append(hedef)
+    return dosyalar
+
+
 def sessiz_deneme(ffmpeg, slaytlar, klasor):
     """Ses servisi olmadan akışı denemek için: kelime sayısına göre sessiz MP3."""
     dosyalar = []
@@ -128,9 +191,9 @@ def video_yap(ffmpeg, gorseller, sesler, gecici, video, mp3):
         ffmpeg, "-f", "concat", "-safe", "0", "-i", str(liste), "-i", str(ses_izi),
         "-map", "0:v", "-map", "1:a", "-vf", "fps=30,scale=1920:1080,format=yuv420p",
         "-c:v", "libx264", "-preset", "veryfast", "-tune", "stillimage", "-crf", "20",
-        "-c:a", "aac", "-b:a", "160k", "-shortest", "-movflags", "+faststart", str(video),
+        "-c:a", "aac", "-b:a", "128k", "-shortest", "-movflags", "+faststart", str(video),
     )
-    calistir(ffmpeg, "-i", str(ses_izi), "-c:a", "libmp3lame", "-q:a", "4", str(mp3))
+    calistir(ffmpeg, "-i", str(ses_izi), "-ac", "1", "-c:a", "libmp3lame", "-b:a", "96k", str(mp3))
     for i, t in enumerate(sureler, 1):
         print(f"  slayt {i:02d}: {t:.1f} sn")
 
@@ -175,8 +238,12 @@ def sesli_pdf(sesler, hedef):
 
 def main():
     p = argparse.ArgumentParser(description="LOBİ sunumunu seslendirir.")
+    p.add_argument("--motor", choices=["edge", "mbrola"], default="edge",
+                   help="edge: Emel sinir ağı sesi (internet gerekir) · mbrola: çevrimdışı Türkçe kadın sesi (tr2)")
     p.add_argument("--ses", default="tr-TR-EmelNeural", help="Edge TTS ses adı (varsayılan: Emel, kadın)")
-    p.add_argument("--hiz", default="-4%", help="Konuşma hızı, ör. -4%% veya +5%%")
+    p.add_argument("--hiz", default="-4%", help="Edge konuşma hızı, ör. -4%% veya +5%%")
+    p.add_argument("--kelime-hizi", type=int, default=165, help="mbrola: dakikadaki kelime sayısı")
+    p.add_argument("--tonlama", type=float, default=1.3, help="mbrola: tonlama aralığı çarpanı (1 = espeak varsayılanı)")
     p.add_argument("--test", action="store_true", help="Ses servisi olmadan sessiz deneme (çıktılar geçici klasöre)")
     a = p.parse_args()
 
@@ -193,10 +260,12 @@ def main():
         if len(gorseller) != len(slaytlar):
             sys.exit(f"PDF'te {len(gorseller)} sayfa var ama anlatim.md'de {len(slaytlar)} slayt var.")
         print("2/4 Anlatım seslendiriliyor…")
-        sesler = (
-            sessiz_deneme(ffmpeg, slaytlar, ses_klasoru) if a.test
-            else asyncio.run(seslendir(slaytlar, ses_klasoru, a.ses, a.hiz))
-        )
+        if a.test:
+            sesler = sessiz_deneme(ffmpeg, slaytlar, ses_klasoru)
+        elif a.motor == "mbrola":
+            sesler = mbrola_seslendir(ffmpeg, slaytlar, ses_klasoru, a.kelime_hizi, a.tonlama)
+        else:
+            sesler = asyncio.run(seslendir(slaytlar, ses_klasoru, a.ses, a.hiz))
         print("3/4 Video oluşturuluyor…")
         video = cikti / "LOBI_Sunum_Sesli.mp4"
         video_yap(ffmpeg, gorseller, sesler, gecici, video, cikti / "LOBI_Anlatim.mp3")
