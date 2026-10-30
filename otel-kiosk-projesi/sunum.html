@@ -1,0 +1,1293 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>LOBİ — Akıllı Konaklama Platformu · Proje Taslağı</title>
+<style>
+@page { size: 1280px 720px; margin: 0; }
+:root{
+  --ink:#0F1C2E; --ink2:#18293F; --ink3:#24395A; --ink4:#2E4668;
+  --paper:#F5F3EE; --card:#FFFFFF; --line:#E4DFD4; --line2:#D6D0C3;
+  --text:#182234; --muted:#5D6A7D; --soft:#8592A4;
+  --accent:#0E9F97; --accent-d:#0A7A74; --accent-l:#DDF1EF;
+  --amber:#E39B2D; --amber-d:#9C6210; --amber-l:#FBEED8;
+  --red:#C8473F; --red-l:#F7E0DE; --green:#2E8B57; --green-l:#DFF0E6;
+  --d-text:#E8EDF4; --d-muted:#9AABC2;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{font-family:Inter,sans-serif;color:var(--text);-webkit-print-color-adjust:exact;print-color-adjust:exact;background:#fff}
+body{font-feature-settings:"cv11","ss01"}
+.slide{width:1280px;height:720px;position:relative;overflow:hidden;background:var(--paper);padding:46px 64px 62px;display:flex;flex-direction:column;break-after:page;page-break-after:always}
+.slide:last-child{break-after:auto;page-break-after:auto}
+.dark{background:var(--ink);color:var(--d-text)}
+.kicker{font-size:12.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-d);display:flex;align-items:center;gap:10px}
+.dark .kicker{color:#5FD3CA}
+.kicker .sec{display:inline-grid;place-items:center;min-width:30px;height:22px;padding:0 7px;border-radius:6px;background:var(--accent);color:#fff;letter-spacing:.04em;font-size:12px}
+h2{font-family:"Inter Display",Inter,sans-serif;font-size:33px;font-weight:700;letter-spacing:-.02em;line-height:1.12;margin-top:10px;max-width:1100px}
+.lead{font-size:17px;color:var(--muted);margin-top:8px;line-height:1.45;max-width:1050px}
+.dark .lead{color:var(--d-muted)}
+.bd{flex:1;min-height:0;margin-top:24px}
+.foot{position:absolute;left:64px;right:64px;bottom:24px;display:flex;justify-content:space-between;font-size:11px;color:var(--soft);letter-spacing:.02em}
+.dark .foot{color:#6F819B}
+.foot b{font-weight:600;color:var(--muted)}
+.dark .foot b{color:var(--d-muted)}
+.ic{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.ibox{width:38px;height:38px;border-radius:10px;background:var(--accent-l);color:var(--accent-d);display:grid;place-items:center;flex:none}
+.ibox.amber{background:var(--amber-l);color:var(--amber-d)}
+.ibox.dk{background:var(--ink3);color:#5FD3CA}
+.ibox.sm{width:30px;height:30px;border-radius:8px}
+.ibox.sm .ic{width:17px;height:17px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+.card h3{font-size:18px;font-weight:650;letter-spacing:-.005em;line-height:1.25}
+.card p{font-size:14.5px;line-height:1.48;color:var(--muted);margin-top:6px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.row{display:flex;gap:12px;align-items:flex-start}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;padding:3px 9px;border-radius:999px;background:var(--accent-l);color:var(--accent-d);white-space:nowrap}
+.pill.amber{background:var(--amber-l);color:var(--amber-d)}
+.pill.red{background:var(--red-l);color:var(--red)}
+.pill.gray{background:#ECE9E2;color:var(--muted)}
+.pill.dk{background:var(--ink3);color:#BFEDE8}
+ul.clean{list-style:none}
+ul.ticks{list-style:none}
+ul.ticks li{position:relative;padding-left:20px;font-size:14.5px;line-height:1.45;color:var(--text);margin-top:7px}
+ul.ticks li::before{content:"";position:absolute;left:2px;top:7.5px;width:7px;height:7px;border-radius:2px;background:var(--accent)}
+ul.ticks.amb li::before{background:var(--amber)}
+ul.ticks li b{font-weight:650}
+.dark ul.ticks li,.dkp ul.ticks li{color:var(--d-text)}
+.dkp .note{color:#8A9CB5}
+.dkp .lead{color:var(--d-muted)}
+.tbl.roomy td{padding:13px 12px}
+.tbl{width:100%;border-collapse:separate;border-spacing:0;font-size:14.5px}
+.tbl th{text-align:left;font-size:12px;font-weight:650;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:0 12px 8px;border-bottom:1.5px solid var(--ink)}
+.tbl td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.4}
+.tbl td:first-child{font-weight:600}
+.tbl tr:last-child td{border-bottom:none}
+.tbl.tight td{padding:8px 12px;font-size:14px}
+.tnum{font-variant-numeric:tabular-nums}
+.note{font-size:12.5px;color:var(--soft);line-height:1.4}
+.dark .note{color:#7D90AA}
+.band{background:var(--ink);color:var(--d-text);border-radius:14px;padding:15px 22px;display:flex;align-items:center;gap:14px;font-size:15px;line-height:1.4}
+.band b{color:#5FD3CA;font-weight:650}
+.small{font-size:13.5px}
+.muted{color:var(--muted)}
+.accent{color:var(--accent-d)}
+.big-num{font-family:"Inter Display",Inter;font-weight:700;letter-spacing:-.02em}
+
+.pcards .card,.ccards .card{display:flex;flex-direction:column}
+.ans{margin-top:auto;padding-top:12px;border-top:1px dashed var(--line2);display:flex;align-items:center;gap:8px;font-size:14px;font-weight:650;color:var(--accent-d)}
+.ans .ic{width:16px;height:16px}
+.cf{margin-top:auto;padding-top:12px;display:flex;gap:6px;flex-wrap:wrap}
+.auto{margin-top:auto;background:var(--ink);border-radius:14px;padding:16px 20px}
+.autochips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.autochips span{font-size:13.5px;font-weight:600;color:#DCEFED;background:var(--ink2);border:1px solid var(--ink4);border-radius:8px;padding:6px 11px;display:inline-flex;align-items:center;gap:7px}
+.autochips span::before{content:"";width:6px;height:6px;border-radius:50%;background:#5FD3CA}
+
+/* cover */
+.cover{padding:56px 64px}
+.cover .logo{font-family:"Inter Display",Inter;font-size:128px;font-weight:800;letter-spacing:-.045em;line-height:.9;margin-top:34px}
+.cover .logo span{color:#5FD3CA}
+.cover .sub{font-family:"Inter Display",Inter;font-size:30px;font-weight:600;letter-spacing:-.015em;line-height:1.2;margin-top:22px;max-width:620px}
+.cover .desc{font-size:16.5px;color:var(--d-muted);line-height:1.5;margin-top:16px;max-width:600px}
+.cover .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px;max-width:640px}
+.cover .chips span{font-size:12.5px;font-weight:600;color:#CFE9E6;border:1px solid var(--ink4);background:var(--ink2);padding:6px 12px;border-radius:999px}
+.cover .art{position:absolute;right:40px;top:60px;width:500px;height:600px}
+.cover .meta{position:absolute;left:64px;bottom:40px;font-size:12px;color:#6F819B}
+
+/* agenda */
+.agenda{display:grid;grid-template-columns:1fr 1fr;column-gap:48px;row-gap:0;margin-top:6px}
+.agenda .it{display:flex;gap:18px;align-items:baseline;padding:17px 0;border-bottom:1px solid var(--line)}
+.agenda .n{font-family:"Inter Display",Inter;font-size:30px;font-weight:700;color:var(--accent);width:44px;flex:none}
+.agenda .t{font-size:20px;font-weight:600}
+.agenda .s{font-size:14.5px;color:var(--muted);margin-top:3px}
+
+/* journey */
+.journey{position:relative;display:grid;grid-template-columns:repeat(8,1fr);gap:10px;margin-top:6px}
+.journey::before{content:"";position:absolute;left:5%;right:5%;top:93px;height:2px;background:repeating-linear-gradient(90deg,var(--accent) 0 8px,transparent 8px 14px)}
+.phase{grid-row:1;border-radius:8px;padding:6px 10px;font-size:11.5px;font-weight:650;text-transform:uppercase;letter-spacing:.06em;text-align:center}
+.step{grid-row:2;text-align:center;padding:0 2px;position:relative}
+.step .dot{width:58px;height:58px;border-radius:50%;background:#fff;border:2px solid var(--accent);display:grid;place-items:center;margin:14px auto 0;color:var(--accent-d);position:relative;z-index:1}
+.step .dot .ic{width:24px;height:24px}
+.step .no{position:absolute;top:8px;left:calc(50% + 16px);z-index:2;background:var(--ink);color:#fff;font-size:11px;font-weight:700;width:22px;height:22px;border-radius:50%;display:grid;place-items:center}
+.step h4{font-size:16px;font-weight:650;margin-top:12px;line-height:1.2}
+.step p{font-size:13.6px;color:var(--muted);line-height:1.45;margin-top:6px;text-align:left}
+
+/* flow arrows */
+.flow{display:flex;align-items:stretch;gap:0}
+.flow .fs{flex:1;background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 14px 12px;position:relative}
+.flow .ar{width:26px;flex:none;display:grid;place-items:center;color:var(--accent)}
+.flow .fs h4{font-size:15px;font-weight:650;margin-top:9px;line-height:1.25}
+.flow .fs p{font-size:13.2px;color:var(--muted);line-height:1.42;margin-top:4px}
+.flow .fs .k{position:absolute;top:12px;right:12px;font-size:11px;font-weight:700;color:var(--soft)}
+
+/* kiosk screen mock */
+.screen{width:300px;height:452px;border-radius:22px;background:var(--ink);padding:12px;box-shadow:0 20px 40px -18px rgba(15,28,46,.45)}
+.screen .in{width:100%;height:100%;border-radius:12px;background:#F9FAFB;padding:16px 18px;display:flex;flex-direction:column}
+.screen .top{display:flex;justify-content:space-between;font-size:10.5px;font-weight:650;color:var(--muted)}
+.screen .prog{height:5px;border-radius:3px;background:#E6EAEE;margin-top:8px;overflow:hidden}
+.screen .prog i{display:block;height:100%;width:40%;background:var(--accent);border-radius:3px}
+.screen h5{font-family:"Inter Display",Inter;font-size:20px;font-weight:700;margin-top:16px;letter-spacing:-.01em}
+.screen .cam{width:150px;height:150px;border-radius:50%;margin:16px auto 0;background:radial-gradient(circle at 50% 40%,#DCE3EA,#C3CDD8);border:4px solid var(--accent);position:relative;overflow:hidden}
+.screen .ok{display:flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:var(--green);margin-top:14px;justify-content:center}
+.screen .sub2{font-size:11px;color:var(--muted);text-align:center;margin-top:4px}
+.screen .btn{margin-top:auto;background:var(--accent);color:#fff;font-weight:650;font-size:13px;text-align:center;padding:10px;border-radius:10px}
+.screen .btn2{margin-top:8px;border:1.5px solid var(--line2);color:var(--text);font-weight:600;font-size:12px;text-align:center;padding:8px;border-radius:10px;display:flex;align-items:center;justify-content:center;gap:6px}
+.screen .langs{display:flex;gap:5px;justify-content:center;margin-top:10px}
+.screen .langs span{font-size:9.5px;font-weight:700;color:var(--muted);border:1px solid var(--line2);border-radius:5px;padding:2px 5px}
+
+/* steps list */
+.sl{display:grid;grid-template-columns:1fr 1fr;column-gap:22px}
+.sl .s{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);align-items:flex-start}
+.sl .s .n{width:26px;height:26px;border-radius:7px;background:var(--ink);color:#fff;font-size:12px;font-weight:700;display:grid;place-items:center;flex:none;margin-top:1px}
+.sl .s h4{font-size:15.5px;font-weight:650;line-height:1.25}
+.sl .s p{font-size:13.4px;color:var(--muted);line-height:1.4;margin-top:2px}
+.sl .s .t{margin-left:auto;font-size:12.5px;font-weight:650;color:var(--accent-d);white-space:nowrap;padding-left:8px}
+
+/* callout list */
+.cl{display:grid;grid-template-columns:1fr 1fr;column-gap:26px;row-gap:2px}
+.cl .c{display:flex;gap:11px;padding:9px 0;border-bottom:1px solid var(--line)}
+.cl .c .b{width:24px;height:24px;border-radius:50%;background:var(--accent);color:#fff;font-size:11.5px;font-weight:700;display:grid;place-items:center;flex:none}
+.cl .c .b.o{background:var(--amber)}
+.cl .c h4{font-size:15px;font-weight:650;line-height:1.25}
+.cl .c p{font-size:13px;color:var(--muted);line-height:1.4;margin-top:2px}
+
+/* arch */
+.arch{display:flex;flex-direction:column;gap:0;height:100%}
+.chips5{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.chipbox{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:9px;font-size:14.5px;font-weight:600}
+.chipbox .ic{color:var(--accent-d);width:18px;height:18px}
+.conn{display:flex;align-items:center;justify-content:center;gap:8px;height:26px;font-size:11px;font-weight:600;color:var(--soft);letter-spacing:.03em}
+.conn::before,.conn::after{content:"";width:2px;height:100%;background:var(--line2)}
+.mid{display:grid;grid-template-columns:1fr 268px;gap:14px}
+.cloud{background:var(--ink);border-radius:14px;padding:14px 16px;color:var(--d-text)}
+.cloud .tt{display:flex;justify-content:space-between;align-items:center;font-size:15px;font-weight:700}
+.cloud .gw{margin-top:10px;background:var(--ink3);border-radius:8px;padding:7px 12px;font-size:13px;font-weight:600;color:#BFEDE8;text-align:center}
+.svc{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+.svc div{background:var(--ink2);border:1px solid var(--ink4);border-radius:8px;padding:8px 11px;font-size:13.5px;font-weight:600;line-height:1.3}
+.svc div small{display:block;font-size:11.8px;font-weight:500;color:var(--d-muted);margin-top:1px}
+.svc div.hl{border-color:#5FD3CA}
+.dataline{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+.dataline span{font-size:12px;font-weight:600;color:#CFE9E6;border:1px dashed var(--ink4);border-radius:6px;padding:3px 8px}
+.ext{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.ext h5{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.ext li{font-size:13.4px;line-height:1.3;padding:6.5px 0;border-bottom:1px solid var(--line);list-style:none}
+.ext li:last-child{border-bottom:none}
+.ext li b{font-weight:650}
+.ext li span{color:var(--muted)}
+.edge{background:var(--accent-l);border:1px solid #BFE5E1;border-radius:14px;padding:11px 14px;display:flex;gap:14px;align-items:center}
+.edge .eg{font-size:14.5px;font-weight:700;color:var(--accent-d);white-space:nowrap;display:flex;gap:8px;align-items:center}
+.edge .dv{display:flex;flex-wrap:wrap;gap:6px}
+.edge .dv span{font-size:13px;font-weight:600;background:#fff;border-radius:6px;padding:4px 9px;color:var(--text)}
+
+/* gantt */
+.gantt{position:relative}
+.gantt .months{display:grid;grid-template-columns:230px 1fr;font-size:12.5px;color:var(--soft);font-weight:600}
+.gantt .scale{position:relative;height:18px}
+.gantt .scale span{position:absolute;transform:translateX(-50%)}
+.gantt .gr{display:grid;grid-template-columns:230px 1fr;align-items:center;border-top:1px solid var(--line);padding:9px 0}
+.gantt .gr .lbl b{display:block;font-size:16px;font-weight:650}
+.gantt .gr .lbl small{font-size:13px;color:var(--muted)}
+.gantt .track{position:relative;height:72px}
+.gantt .bar{position:absolute;top:0;height:28px;border-radius:6px;background:var(--accent);color:#fff;font-size:13px;font-weight:650;display:flex;align-items:center;padding:0 9px;white-space:nowrap}
+.gantt .bar.a{background:var(--amber)}
+.gantt .bar.k{background:var(--ink3)}
+.gantt .bar.g{background:#7D8CA1}
+.gantt .del{position:absolute;top:35px;font-size:13.2px;color:var(--muted);line-height:1.35}
+.gantt .vline{position:absolute;top:18px;bottom:0;width:0;border-left:1.5px dashed var(--line2)}
+
+/* moscow */
+.msc{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;height:100%}
+.msc .col{border-radius:14px;padding:14px 16px;background:#fff;border:1px solid var(--line)}
+.msc .col h4{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.msc .col .hdr{display:flex;justify-content:space-between;align-items:center;padding-bottom:10px;border-bottom:1.5px solid currentColor}
+.msc .col ul{list-style:none;margin-top:6px}
+.msc .col li{font-size:14.2px;line-height:1.38;padding:7px 0;border-bottom:1px solid var(--line)}
+.msc .col li:last-child{border-bottom:none}
+
+/* kpi tiles */
+.kpi{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px;display:flex;flex-direction:column}
+.kpi.big{padding:22px 22px}
+.kpi.big .v{font-size:50px}
+.kpi.big .l{font-size:17px;margin-top:auto}
+.kpi.big .d{font-size:14.5px}
+.kpi .v{font-family:"Inter Display",Inter;font-size:34px;font-weight:700;letter-spacing:-.02em;color:var(--ink);line-height:1.05}
+.kpi .v small{font-size:16px;font-weight:600;color:var(--muted);letter-spacing:0}
+.kpi .l{font-size:14.5px;font-weight:650;margin-top:8px}
+.kpi .d{font-size:13.2px;color:var(--muted);line-height:1.4;margin-top:4px}
+
+/* matrix */
+.matrix{position:relative;width:440px;height:400px;margin-left:34px}
+.matrix .plane{position:absolute;inset:0;border-left:2px solid var(--ink);border-bottom:2px solid var(--ink);background:
+ linear-gradient(var(--line),var(--line)) 50% 0/1px 100% no-repeat,
+ linear-gradient(var(--line),var(--line)) 0 50%/100% 1px no-repeat}
+.matrix .q{position:absolute;right:10px;top:10px;font-size:11px;font-weight:700;color:var(--accent-d);letter-spacing:.06em;text-transform:uppercase}
+.matrix .pt{position:absolute;transform:translate(-50%,50%);display:flex;flex-direction:column;align-items:center;gap:6px;width:150px}
+.matrix .pt i{width:14px;height:14px;border-radius:50%;background:#9AA6B6;border:2px solid #fff;box-shadow:0 0 0 1px #9AA6B6}
+.matrix .pt span{font-size:13px;font-weight:600;color:var(--muted);text-align:center;line-height:1.25}
+.matrix .pt.me i{width:22px;height:22px;background:var(--accent);box-shadow:0 0 0 6px rgba(14,159,151,.18)}
+.matrix .pt.me span{color:var(--accent-d);font-size:14px;font-weight:750}
+.matrix .ax{position:absolute;font-size:12.5px;font-weight:650;color:var(--muted)}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<defs>
+<symbol id="i-kiosk" viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="11" rx="1.5"/><path d="M8.5 16h7M12 13v3M8 21h8M10 16v5M14 16v5"/></symbol>
+<symbol id="i-door" viewBox="0 0 24 24"><path d="M6 21V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v17"/><path d="M3.5 21h17"/><circle cx="14.5" cy="12" r=".9"/></symbol>
+<symbol id="i-face" viewBox="0 0 24 24"><path d="M3 8V5a2 2 0 0 1 2-2h3M16 3h3a2 2 0 0 1 2 2v3M21 16v3a2 2 0 0 1-2 2h-3M8 21H5a2 2 0 0 1-2-2v-3"/><path d="M9 9.5v1M15 9.5v1M9 15c1.7 1.4 4.3 1.4 6 0"/></symbol>
+<symbol id="i-key" viewBox="0 0 24 24"><circle cx="7.5" cy="15.5" r="4.5"/><path d="M10.7 12.3 20 3M16.5 6.5l3 3M14 9l2 2"/></symbol>
+<symbol id="i-phone" viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="2.5"/><path d="M11 18h2"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6l8-3z"/><path d="M9 12l2 2 4-4"/></symbol>
+<symbol id="i-cloud" viewBox="0 0 24 24"><path d="M7 18a4.5 4.5 0 0 1-.6-8.96A6 6 0 0 1 18 9a4.5 4.5 0 0 1-.5 9H7z"/></symbol>
+<symbol id="i-card" viewBox="0 0 24 24"><rect x="2.5" y="5" width="19" height="14" rx="2"/><path d="M2.5 10h19M6 15h4"/></symbol>
+<symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7.5 17v-5M11.5 17V8M15.5 17v-3M19.5 17V6"/></symbol>
+<symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8z"/></symbol>
+<symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.8c1.8.7 3 2.4 3.5 5.2"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+<symbol id="i-lock" viewBox="0 0 24 24"><rect x="4.5" y="10.5" width="15" height="10.5" rx="2"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/></symbol>
+<symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.6 5.7 3.6 9s-1.1 6.3-3.6 9c-2.5-2.7-3.6-5.7-3.6-9S9.5 5.7 12 3z"/></symbol>
+<symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-5A8 8 0 1 1 21 12z"/></symbol>
+<symbol id="i-doc" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></symbol>
+<symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3.5 2.5 20h19L12 3.5z"/><path d="M12 10v4M12 17h.01"/></symbol>
+<symbol id="i-leaf" viewBox="0 0 24 24"><path d="M5 20c-.5-9 5-15 15-16 .5 10-5.5 15.5-15 16z"/><path d="M5 20c3-5 6.5-8 10-10"/></symbol>
+<symbol id="i-car" viewBox="0 0 24 24"><path d="M4 14l2-5.5A2 2 0 0 1 7.9 7h8.2a2 2 0 0 1 1.9 1.5L20 14"/><rect x="3" y="14" width="18" height="4.5" rx="1.5"/><path d="M6 18.5V20M18 18.5V20M7 16.2h.01M17 16.2h.01"/></symbol>
+<symbol id="i-locker" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="1.5"/><path d="M12 3v18M8.5 8v2.5M15.5 8v2.5"/></symbol>
+<symbol id="i-spark" viewBox="0 0 24 24"><path d="M11 3l1.8 5.2L18 10l-5.2 1.8L11 17l-1.8-5.2L4 10l5.2-1.8L11 3z"/><path d="M18.5 15l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8.8-2.2z"/></symbol>
+<symbol id="i-video" viewBox="0 0 24 24"><rect x="2.5" y="6" width="13" height="12" rx="2"/><path d="M15.5 10.5 21.5 7v10l-6-3.5"/></symbol>
+<symbol id="i-bed" viewBox="0 0 24 24"><path d="M3 19V6M3 14h18v5M21 14v-1.5a3 3 0 0 0-3-3h-7V14"/><circle cx="7" cy="11" r="1.8"/></symbol>
+<symbol id="i-map" viewBox="0 0 24 24"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14M15 6v14"/></symbol>
+<symbol id="i-qr" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3M21 14v.01M14 21h3M21 18v3h-1"/></symbol>
+<symbol id="i-elev" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="1.5"/><path d="M9 9.5l3-3 3 3M9 14.5l3 3 3-3"/></symbol>
+<symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></symbol>
+<symbol id="i-smile" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8.5 14.5c1.9 2 5.1 2 7 0M9 9.5h.01M15 9.5h.01"/></symbol>
+<symbol id="i-cart" viewBox="0 0 24 24"><path d="M3 4h2l2.4 11h11l2-8H6.2"/><circle cx="9" cy="19.5" r="1.3"/><circle cx="17" cy="19.5" r="1.3"/></symbol>
+<symbol id="i-building" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="1"/><path d="M8 7h2M14 7h2M8 11h2M14 11h2M8 15h2M14 15h2M10 21v-3h4v3"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+<symbol id="i-pad" viewBox="0 0 24 24"><rect x="4" y="2.5" width="16" height="19" rx="2.5"/><path d="M8.5 7.5h.01M12 7.5h.01M15.5 7.5h.01M8.5 11.5h.01M12 11.5h.01M15.5 11.5h.01M8.5 15.5h.01M12 15.5h.01M15.5 15.5h.01"/></symbol>
+<symbol id="i-nfc" viewBox="0 0 24 24"><path d="M6 8.5a5 5 0 0 1 0 7M9.5 6a8.5 8.5 0 0 1 0 12M13 3.5a12 12 0 0 1 0 17"/><circle cx="3.5" cy="12" r=".6"/></symbol>
+<symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></symbol>
+<symbol id="i-eyeoff" viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 6.1A9.8 9.8 0 0 1 12 6c5 0 8.5 4 9.5 6-.4.9-1.2 2.1-2.3 3.2M6.6 7.6C4.6 8.9 3.2 10.7 2.5 12c1 2 4.5 6 9.5 6 1.7 0 3.2-.5 4.5-1.2"/><path d="M9.9 10a3 3 0 0 0 4.1 4.1"/></symbol>
+<symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></symbol>
+<symbol id="i-cpu" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="1.5"/><rect x="9.5" y="9.5" width="5" height="5"/><path d="M9 2.5V6M15 2.5V6M9 18v3.5M15 18v3.5M2.5 9H6M2.5 15H6M18 9h3.5M18 15h3.5"/></symbol>
+<symbol id="i-coin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M14.8 9.2c-.5-.9-1.6-1.4-2.8-1.4-1.6 0-2.8.9-2.8 2.1 0 2.9 5.8 1.5 5.8 4.3 0 1.2-1.3 2.1-3 2.1-1.3 0-2.4-.6-2.9-1.5M12 6v1.8M12 16.3V18"/></symbol>
+<symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 16.8l-5.4 2.9 1.1-6.1-4.5-4.2 6.1-.8L12 3z"/></symbol>
+<symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15L6 16z"/><path d="M10 21h4"/></symbol>
+<symbol id="i-camera" viewBox="0 0 24 24"><path d="M3 8a2 2 0 0 1 2-2h2.5L9 4h6l1.5 2H19a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><circle cx="12" cy="13" r="3.5"/></symbol>
+<symbol id="i-id" viewBox="0 0 24 24"><rect x="2.5" y="5" width="19" height="14" rx="2"/><circle cx="8.5" cy="11" r="2"/><path d="M5.5 16c.5-1.5 1.6-2.3 3-2.3s2.5.8 3 2.3M14 10h4.5M14 13.5h3"/></symbol>
+<symbol id="i-wifi" viewBox="0 0 24 24"><path d="M2.5 9a14 14 0 0 1 19 0M5.5 12.5a9.5 9.5 0 0 1 13 0M8.6 16a5 5 0 0 1 6.8 0"/><circle cx="12" cy="19.2" r=".9"/></symbol>
+<symbol id="i-server" viewBox="0 0 24 24"><rect x="3.5" y="4" width="17" height="7" rx="1.5"/><rect x="3.5" y="13" width="17" height="7" rx="1.5"/><path d="M7 7.5h.01M7 16.5h.01M11 7.5h6M11 16.5h6"/></symbol>
+<symbol id="i-sync" viewBox="0 0 24 24"><path d="M20 8a8.5 8.5 0 0 0-15.2-1.5M4 3.5v3.5h3.5"/><path d="M4 16a8.5 8.5 0 0 0 15.2 1.5M20 20.5V17h-3.5"/></symbol>
+<symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+<symbol id="i-headset" viewBox="0 0 24 24"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="13.5" width="4" height="6" rx="1.5"/><rect x="17" y="13.5" width="4" height="6" rx="1.5"/><path d="M19 19.5c0 1.4-1.6 2-4 2h-2"/></symbol>
+</defs>
+</svg>
+
+<!-- 1 · KAPAK -->
+<section class="slide dark cover" data-nofoot>
+  <div class="kicker">Proje taslağı · Ekim 2026</div>
+  <div class="logo">LOB<span>İ</span></div>
+  <div class="sub">Resepsiyonsuz, kiosk tabanlı akıllı konaklama platformu</div>
+  <div class="desc">Misafir lobideki kiosk'ta kendi girişini yapar, kimliği çipten doğrulanır, odasının kapısını yüzüyle, telefonuyla ya da PIN koduyla açar. Otel programı ve Wi‑Fi dahil her şey tek platformda.</div>
+  <div class="chips"><span>Self check‑in kiosk</span><span>Yüz doğrulamalı akıllı kapı</span><span>Dijital anahtar</span><span>PMS &amp; Wi‑Fi hotspot entegrasyonu</span><span>KVKK uyumlu</span></div>
+  <div class="meta">“LOBİ” bir çalışma adıdır · Bu belge tartışmaya açık bir proje taslağıdır</div>
+  <svg class="art" viewBox="0 0 500 600">
+    <defs>
+      <radialGradient id="rg" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#0E9F97" stop-opacity=".28"/><stop offset="1" stop-color="#0E9F97" stop-opacity="0"/></radialGradient>
+    </defs>
+    <circle cx="250" cy="300" r="250" fill="url(#rg)"/>
+    <circle cx="250" cy="300" r="160" fill="none" stroke="#fff" stroke-opacity=".06"/>
+    <circle cx="250" cy="300" r="230" fill="none" stroke="#fff" stroke-opacity=".05"/>
+    <!-- kiosk -->
+    <g transform="translate(58,120)">
+      <rect x="0" y="0" width="156" height="370" rx="16" fill="#18293F" stroke="#2E4668" stroke-width="2"/>
+      <circle cx="78" cy="20" r="4.5" fill="#5FD3CA"/><circle cx="62" cy="20" r="2" fill="#2E4668"/><circle cx="94" cy="20" r="2" fill="#2E4668"/>
+      <rect x="14" y="36" width="128" height="168" rx="7" fill="#0B1422" stroke="#5FD3CA" stroke-opacity=".55"/>
+      <g stroke="#5FD3CA" stroke-width="3" fill="none" stroke-linecap="round">
+        <path d="M50 70v-12h12M94 58h12v12M106 120v12h-12M62 132h-12v-12"/>
+      </g>
+      <circle cx="78" cy="88" r="13" fill="none" stroke="#E8EDF4" stroke-width="2.2"/>
+      <path d="M58 124c4-12 12-17 20-17s16 5 20 17" fill="none" stroke="#E8EDF4" stroke-width="2.2"/>
+      <circle cx="112" cy="128" r="11" fill="#2E8B57"/><path d="M107 128l3.5 3.5 6.5-7" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="34" y="160" width="88" height="8" rx="4" fill="#24395A"/>
+      <rect x="46" y="178" width="64" height="14" rx="7" fill="#0E9F97"/>
+      <rect x="24" y="220" width="108" height="30" rx="5" fill="#24395A"/>
+      <rect x="40" y="229" width="76" height="12" rx="2" fill="#18293F"/>
+      <rect x="24" y="262" width="50" height="62" rx="6" fill="#24395A"/>
+      <rect x="31" y="269" width="36" height="18" rx="2" fill="#0B1422"/>
+      <rect x="84" y="264" width="48" height="8" rx="4" fill="#0B1422"/>
+      <rect x="84" y="282" width="48" height="26" rx="4" fill="#24395A"/>
+      <g stroke="#2E4668" stroke-width="2" stroke-linecap="round"><path d="M44 342h68M44 350h68"/></g>
+      <rect x="-12" y="370" width="180" height="10" rx="5" fill="#24395A"/>
+    </g>
+    <!-- connection -->
+    <path d="M218 205 C 250 150, 340 140, 398 250" fill="none" stroke="#5FD3CA" stroke-width="2" stroke-dasharray="4 7" stroke-linecap="round"/>
+    <circle cx="256" cy="160" r="22" fill="#0E9F97"/>
+    <g transform="translate(244,148)" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="4.5"/><path d="M10.7 12.3 20 3M16.5 6.5l3 3M14 9l2 2"/></g>
+    <!-- door -->
+    <g transform="translate(300,80)">
+      <rect x="0" y="0" width="160" height="430" rx="4" fill="none" stroke="#2E4668" stroke-width="2"/>
+      <rect x="8" y="8" width="144" height="422" fill="#18293F"/>
+      <rect x="55" y="38" width="50" height="24" rx="5" fill="#24395A"/>
+      <text x="80" y="55" text-anchor="middle" font-family="Inter" font-size="13" font-weight="700" fill="#E8EDF4">204</text>
+      <rect x="100" y="150" width="38" height="110" rx="10" fill="#0B1422" stroke="#E39B2D" stroke-width="1.6"/>
+      <circle cx="119" cy="168" r="6" fill="#E39B2D"/><circle cx="108" cy="168" r="1.8" fill="#7D5A1E"/><circle cx="130" cy="168" r="1.8" fill="#7D5A1E"/>
+      <rect x="106" y="182" width="26" height="18" rx="2.5" fill="#0E9F97"/>
+      <g fill="#2E4668"><circle cx="110" cy="212" r="2.2"/><circle cx="119" cy="212" r="2.2"/><circle cx="128" cy="212" r="2.2"/><circle cx="110" cy="222" r="2.2"/><circle cx="119" cy="222" r="2.2"/><circle cx="128" cy="222" r="2.2"/><circle cx="110" cy="232" r="2.2"/><circle cx="119" cy="232" r="2.2"/><circle cx="128" cy="232" r="2.2"/></g>
+      <rect x="108" y="246" width="22" height="3" rx="1.5" fill="#2E8B57"/>
+      <rect x="94" y="272" width="48" height="10" rx="5" fill="#8FA3BF"/>
+    </g>
+    <!-- phone -->
+    <g transform="translate(218,410)">
+      <rect x="0" y="0" width="44" height="80" rx="9" fill="#24395A" stroke="#2E4668" stroke-width="2"/>
+      <rect x="5" y="9" width="34" height="56" rx="3" fill="#0B1422"/>
+      <g transform="translate(10,25)" fill="none" stroke="#5FD3CA" stroke-width="2" stroke-linecap="round"><circle cx="7.5" cy="15.5" r="4.5"/><path d="M10.7 12.3 20 3M16.5 6.5l3 3"/></g>
+    </g>
+    <g fill="none" stroke="#5FD3CA" stroke-width="2" stroke-linecap="round" opacity=".8"><path d="M272 432a14 14 0 0 1 0 20M282 424a26 26 0 0 1 0 36"/></g>
+  </svg>
+</section>
+
+<!-- 2 · GÜNDEM -->
+<section class="slide">
+  <div class="kicker">Gündem</div>
+  <h2>Sunumun akışı</h2>
+  <div class="bd">
+    <div class="agenda">
+      <div class="it"><div class="n">01</div><div><div class="t">Problem &amp; fırsat</div><div class="s">Klasik resepsiyonun maliyeti ve boşluk</div></div></div>
+      <div class="it"><div class="n">06</div><div><div class="t">Yenilikçi özellikler</div><div class="s">AI resepsiyonist, akıllı oda, upsell, enerji…</div></div></div>
+      <div class="it"><div class="n">02</div><div><div class="t">Çözüm &amp; misafir yolculuğu</div><div class="s">Rezervasyondan check‑out'a uçtan uca akış</div></div></div>
+      <div class="it"><div class="n">07</div><div><div class="t">Operasyon &amp; istisna senaryoları</div><div class="s">“Resepsiyonsuz” ama insansız değil</div></div></div>
+      <div class="it"><div class="n">03</div><div><div class="t">Donanım: kiosk, akıllı kapı, dijital anahtar</div><div class="s">Bileşenler ve seçenekler</div></div></div>
+      <div class="it"><div class="n">08</div><div><div class="t">Yol haritası, MVP, ekip &amp; bütçe</div><div class="s">Fazlar, kapsam ve kaba maliyet</div></div></div>
+      <div class="it"><div class="n">04</div><div><div class="t">Kimlik, yüz doğrulama, KVKK &amp; güvenlik</div><div class="s">Gizlilik öncelikli biyometri tasarımı</div></div></div>
+      <div class="it"><div class="n">09</div><div><div class="t">İş modeli, getiri &amp; konumlandırma</div><div class="s">Kendi tesisimiz ve SaaS olarak satış</div></div></div>
+      <div class="it"><div class="n">05</div><div><div class="t">Mimari &amp; entegrasyonlar</div><div class="s">Otel programı (PMS), Wi‑Fi hotspot, teknoloji</div></div></div>
+      <div class="it"><div class="n">10</div><div><div class="t">Başarı ölçütleri, riskler &amp; sonraki adımlar</div><div class="s">KPI'lar, önlemler ve karar noktaları</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 · YÖNETİCİ ÖZETİ -->
+<section class="slide">
+  <div class="kicker">Yönetici özeti</div>
+  <h2>Kuyruk yok, anahtar yok, resepsiyon masası yok</h2>
+  <div class="bd" style="display:flex;flex-direction:column;gap:16px">
+    <div style="display:grid;grid-template-columns:430px 1fr;gap:20px;flex:1;min-height:0">
+      <div style="background:var(--ink);border-radius:16px;padding:28px 30px;color:var(--d-text);display:flex;flex-direction:column;justify-content:space-between">
+        <div style="font-family:'Inter Display',Inter;font-size:29px;font-weight:600;line-height:1.3;letter-spacing:-.01em">Misafir otele gelir, kiosk'ta <span style="color:#5FD3CA">2 dakikadan kısa</span> sürede girişini yapar ve odasının kapısını <span style="color:#5FD3CA">yüzüyle</span> açar.</div>
+        <div class="note" style="color:#8A9CB5;font-size:13.5px">Yüz doğrulama isteğe bağlıdır; isteyen misafir telefonuyla, PIN koduyla veya kartla da girer.</div>
+      </div>
+      <div style="display:flex;flex-direction:column;justify-content:space-between">
+        <div class="row" style="padding:10px 0;border-bottom:1px solid var(--line)"><span class="pill" style="width:72px;justify-content:center">Ne?</span><p style="font-size:15.5px;line-height:1.45">Resepsiyon işlerinin tamamını (kimlik, yasal bildirim, ödeme, anahtar, Wi‑Fi, fatura) kiosk ve mobil üzerinden yapan, otel programıyla konuşan uçtan uca platform.</p></div>
+        <div class="row" style="padding:10px 0;border-bottom:1px solid var(--line)"><span class="pill" style="width:72px;justify-content:center">Neden?</span><p style="font-size:15.5px;line-height:1.45">7/24 resepsiyon kadrosunun maliyeti ve personel bulma zorluğu; misafirlerin hızlı, temassız deneyim beklentisi.</p></div>
+        <div class="row" style="padding:10px 0;border-bottom:1px solid var(--line)"><span class="pill" style="width:72px;justify-content:center">Nasıl?</span><p style="font-size:15.5px;line-height:1.45">Kimlik çipindeki fotoğraf ile canlı yüz eşleştirilir. Onay veren misafirin şifreli yüz şablonu yalnızca kendi oda kapısına, yalnızca konaklama süresince tanımlanır.</p></div>
+        <div class="row" style="padding:10px 0"><span class="pill amber" style="width:72px;justify-content:center">Hedef</span><p style="font-size:15.5px;line-height:1.45">Önce pilot tesiste 6 ayda MVP, ardından diğer otellere SaaS (abonelik) olarak satılabilen bir ürün.</p></div>
+      </div>
+    </div>
+    <div class="g4">
+      <div class="kpi" style="padding:14px 18px"><div class="v">&lt; 2 <small>dk</small></div><div class="l" style="margin-top:4px">Kiosk check‑in hedefi</div></div>
+      <div class="kpi" style="padding:14px 18px"><div class="v">7/24</div><div class="l" style="margin-top:4px">Kesintisiz giriş‑çıkış</div></div>
+      <div class="kpi" style="padding:14px 18px"><div class="v">1 : N</div><div class="l" style="margin-top:4px">Bir uzaktan görevli, birden çok tesis</div></div>
+      <div class="kpi" style="padding:14px 18px"><div class="v">≈ 1–2 <small>yıl</small></div><div class="l" style="margin-top:4px">Örnek geri dönüş süresi (40 oda)</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 4 · PROBLEM & FIRSAT -->
+<section class="slide">
+  <div class="kicker"><span class="sec">01</span>Problem &amp; fırsat</div>
+  <h2>Klasik resepsiyon pahalı, yavaş ve gece yarısı kapalı</h2>
+  <div class="bd" style="display:grid;grid-template-columns:1fr 380px;gap:20px">
+    <div class="g2 pcards" style="gap:14px">
+      <div class="card"><div class="ibox amber"><svg class="ic"><use href="#i-users"/></svg></div><h3 style="margin-top:12px">Personel maliyeti ve bulunabilirlik</h3><p>7/24 açık bir ön büro için vardiyalı en az 4–5 kişilik kadro gerekir. Yabancı dil bilen nitelikli personel bulmak giderek zorlaşıyor.</p><div class="ans"><svg class="ic"><use href="#i-arrow"/></svg>Kiosk + paylaşımlı uzaktan resepsiyon</div></div>
+      <div class="card"><div class="ibox amber"><svg class="ic"><use href="#i-clock"/></svg></div><h3 style="margin-top:12px">Kuyruk ve bekleme</h3><p>Check‑in saatlerinde ve tur gruplarında kuyruk oluşur. Gece geç gelen misafir kapalı resepsiyonla karşılaşır.</p><div class="ans"><svg class="ic"><use href="#i-arrow"/></svg>Ön check‑in ile 30 saniyede giriş, 7/24</div></div>
+      <div class="card"><div class="ibox amber"><svg class="ic"><use href="#i-card"/></svg></div><h3 style="margin-top:12px">Fiziksel anahtar ve kart</h3><p>Kaybolan, kopyalanan, manyetizması bozulan kartlar; tekrar kodlama, kart maliyeti ve güvenlik açığı.</p><div class="ans"><svg class="ic"><use href="#i-arrow"/></svg>Yüz, mobil anahtar ve PIN</div></div>
+      <div class="card"><div class="ibox amber"><svg class="ic"><use href="#i-doc"/></svg></div><h3 style="margin-top:12px">Elle yapılan yasal işler</h3><p>KBS bildirimi, kimlik fotokopisi, fatura ve Wi‑Fi şifresi dağıtımı elle yapıldığında hata, gecikme ve denetim riski doğar.</p><div class="ans"><svg class="ic"><use href="#i-arrow"/></svg>KBS, e‑Fatura ve Wi‑Fi otomatik</div></div>
+    </div>
+    <div class="dkp" style="background:var(--ink);border-radius:16px;padding:26px 28px;color:var(--d-text)">
+      <div class="kicker" style="color:#5FD3CA">Fırsat</div>
+      <div style="font-family:'Inter Display',Inter;font-size:23px;font-weight:650;line-height:1.3;margin-top:10px">Teknoloji ve misafir alışkanlıkları artık hazır</div>
+      <ul class="ticks" style="margin-top:16px;display:flex;flex-direction:column;gap:8px">
+        <li>Misafirler self‑servise alıştı: havalimanı kioskları, mobil bankacılık, e‑Devlet.</li>
+        <li>Çipli T.C. kimlik kartı ve e‑pasaport sayesinde kimlik, çipten güvenle doğrulanabiliyor.</li>
+        <li>Yüz doğrulama ve uç (edge) yapay zekâ donanımı artık oda başına uygulanabilir maliyette.</li>
+        <li>Butik oteller, apartlar ve küçük şehir otelleri için “personelsiz gece” modelinde ciddi bir boşluk var.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 5 · ÇÖZÜM -->
+<section class="slide">
+  <div class="kicker"><span class="sec">02</span>Çözüm</div>
+  <h2>Dört bileşen, tek platform</h2>
+  <div class="bd" style="display:flex;flex-direction:column;gap:14px">
+    <div class="g4 ccards" style="flex:1;min-height:0">
+      <div class="card"><div class="ibox"><svg class="ic"><use href="#i-kiosk"/></svg></div><h3 style="margin-top:12px">Self‑servis kiosk</h3><p style="margin-bottom:4px">Lobide, 7/24</p>
+        <ul class="ticks"><li>Rezervasyon bulma, kimlik okuma</li><li>Canlılık testi ve yüz eşleştirme</li><li>Ödeme, depozito, fatura</li><li>Anahtar ve Wi‑Fi erişimi üretme</li><li>Görüntülü canlı destek</li></ul><div class="cf"><span class="pill">MVP · Faz 1</span></div></div>
+      <div class="card"><div class="ibox"><svg class="ic"><use href="#i-door"/></svg></div><h3 style="margin-top:12px">Akıllı kapı ünitesi</h3><p style="margin-bottom:4px">Her oda kapısında</p>
+        <ul class="ticks"><li>Kameralı yüz doğrulama (cihaz üzerinde)</li><li>Mobil anahtar (NFC / Bluetooth)</li><li>PIN kodu ve yedek kart</li><li>Görüntülü zil, “rahatsız etmeyin”</li><li>İnternetsiz de çalışır</li></ul><div class="cf"><span class="pill">Kart/mobil Faz 1</span><span class="pill amber">Yüz Faz 2</span></div></div>
+      <div class="card"><div class="ibox"><svg class="ic"><use href="#i-phone"/></svg></div><h3 style="margin-top:12px">Misafir uygulaması &amp; web</h3><p style="margin-bottom:4px">Varıştan önce ve konaklama boyunca</p>
+        <ul class="ticks"><li>Online ön check‑in</li><li>Mobil anahtar, paylaşılabilir anahtar</li><li>Oda servisi, ekstra hizmet satın alma</li><li>AI asistanla sohbet</li><li>Tek dokunuşla check‑out</li></ul><div class="cf"><span class="pill amber">Faz 2</span></div></div>
+      <div class="card"><div class="ibox"><svg class="ic"><use href="#i-chart"/></svg></div><h3 style="margin-top:12px">Yönetim paneli</h3><p style="margin-bottom:4px">Bulutta, her cihazdan</p>
+        <ul class="ticks"><li>Canlı oda ve kapı durumu</li><li>Rezervasyon ve misafir listesi</li><li>Housekeeping görevleri</li><li>Uzaktan kiosk ve kapı yönetimi</li><li>Raporlar ve gelir analizi</li></ul><div class="cf"><span class="pill">MVP · Faz 1</span></div></div>
+    </div>
+    <div class="band"><svg class="ic" style="color:#5FD3CA"><use href="#i-link"/></svg><div><b>Entegrasyon katmanı:</b> otel programı (PMS) · kanal yöneticisi · Wi‑Fi hotspot · sanal POS · KBS · e‑Fatura / e‑Arşiv · Apple Wallet · SMS / WhatsApp</div></div>
+  </div>
+</section>
+
+<!-- 6 · MİSAFİR YOLCULUĞU -->
+<section class="slide">
+  <div class="kicker"><span class="sec">02</span>Misafir yolculuğu</div>
+  <h2>Rezervasyondan check‑out'a uçtan uca akış</h2>
+  <div class="bd" style="display:flex;flex-direction:column">
+    <div class="journey">
+      <div class="phase" style="grid-column:1/3;background:#ECE9E2;color:var(--muted)">Varıştan önce</div>
+      <div class="phase" style="grid-column:3/6;background:var(--accent-l);color:var(--accent-d)">Lobide · ~90 saniye</div>
+      <div class="phase" style="grid-column:6/8;background:var(--amber-l);color:var(--amber-d)">Konaklama</div>
+      <div class="phase" style="grid-column:8/9;background:#E3E8EF;color:var(--ink3)">Ayrılış</div>
+
+      <div class="step"><span class="no">1</span><div class="dot"><svg class="ic"><use href="#i-globe"/></svg></div><h4>Rezervasyon</h4><p>Web, OTA (Booking, Expedia vb.) veya doğrudan. Onay e‑postasında ön check‑in bağlantısı gelir.</p></div>
+      <div class="step"><span class="no">2</span><div class="dot"><svg class="ic"><use href="#i-phone"/></svg></div><h4>Ön check‑in</h4><p>İsteğe bağlı: telefonla kimlik tarama, selfie ve ödeme. Kiosk'taki işlem 30 saniyeye iner.</p></div>
+      <div class="step"><span class="no">3</span><div class="dot"><svg class="ic"><use href="#i-qr"/></svg></div><h4>Kiosk'ta karşılama</h4><p>Dil seçimi; rezervasyon QR kodu, rezervasyon numarası veya isimle bulunur.</p></div>
+      <div class="step"><span class="no">4</span><div class="dot"><svg class="ic"><use href="#i-face"/></svg></div><h4>Kimlik &amp; yüz</h4><p>Kimlik çipi okunur, canlılık testiyle canlı yüz kimlik fotoğrafıyla eşleşir. KBS bildirimi otomatik.</p></div>
+      <div class="step"><span class="no">5</span><div class="dot"><svg class="ic"><use href="#i-key"/></svg></div><h4>Ödeme &amp; anahtar</h4><p>Depozito/ödeme; anahtar türü seçilir (yüz, mobil, PIN, kart). Wi‑Fi erişimi otomatik tanımlanır.</p></div>
+      <div class="step"><span class="no">6</span><div class="dot"><svg class="ic"><use href="#i-door"/></svg></div><h4>Oda kapısı</h4><p>Kapı kamerası misafiri tanır, kilit açılır; oda “hoş geldin” moduna geçer (ışık, klima).</p></div>
+      <div class="step"><span class="no">7</span><div class="dot"><svg class="ic"><use href="#i-chat"/></svg></div><h4>Konaklama</h4><p>Uygulama veya AI asistanla ekstra hizmet, geç çıkış, temizlik talebi, taksi, öneriler.</p></div>
+      <div class="step"><span class="no">8</span><div class="dot"><svg class="ic"><use href="#i-check"/></svg></div><h4>Check‑out</h4><p>Tek dokunuşla veya otomatik. e‑Fatura e‑postaya gelir; anahtar, Wi‑Fi ve biyometrik veri otomatik silinir.</p></div>
+    </div>
+    <div class="auto">
+      <div class="note" style="font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:#5FD3CA">Arka planda kendiliğinden olanlar</div>
+      <div class="autochips"><span>KBS bildirimi</span><span>PMS'e check‑in kaydı</span><span>Wi‑Fi hesabı açılır</span><span>Kapıya süreli yetki</span><span>Oda “hoş geldin” modu</span><span>Housekeeping görevi</span><span>e‑Fatura / e‑Arşiv</span><span>Verilerin otomatik silinmesi</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 7 · KİOSK AKIŞI -->
+<section class="slide">
+  <div class="kicker"><span class="sec">02</span>Kiosk <span lang="en">check‑in</span> akışı</div>
+  <h2>10 adım, ortalama ~90 saniye</h2>
+  <div class="bd" style="display:grid;grid-template-columns:1fr 300px;gap:34px">
+    <div style="display:flex;flex-direction:column">
+      <div class="sl">
+        <div class="s"><span class="n">1</span><div><h4>Karşılama &amp; dil</h4><p>TR, EN, DE, RU, AR ve daha fazlası</p></div><span class="t">5 sn</span></div>
+        <div class="s"><span class="n">6</span><div><h4>Ek misafirler</h4><p>Eş, arkadaş; çocuklar ebeveyne bağlanır</p></div><span class="t">+20 sn/kişi</span></div>
+        <div class="s"><span class="n">2</span><div><h4>Rezervasyonu bulma</h4><p>QR kod, rezervasyon no veya isim + tarih</p></div><span class="t">10 sn</span></div>
+        <div class="s"><span class="n">7</span><div><h4>Ekstra teklifler</h4><p>Oda yükseltme, kahvaltı, geç çıkış, otopark</p></div><span class="t">10 sn</span></div>
+        <div class="s"><span class="n">3</span><div><h4>Kimlik okuma</h4><p>T.C. kimlik kartı (NFC çip) veya pasaport (MRZ + çip)</p></div><span class="t">15 sn</span></div>
+        <div class="s"><span class="n">8</span><div><h4>Ödeme</h4><p>Temassız kart, mobil ödeme, ön provizyon</p></div><span class="t">15 sn</span></div>
+        <div class="s"><span class="n">4</span><div><h4>Canlılık + yüz eşleştirme</h4><p>Çipteki fotoğraf ↔ canlı görüntü (1:1)</p></div><span class="t">5 sn</span></div>
+        <div class="s"><span class="n">9</span><div><h4>Anahtar seçimi</h4><p>Yüz aktivasyonu, mobil anahtar, PIN, yedek kart</p></div><span class="t">10 sn</span></div>
+        <div class="s"><span class="n">5</span><div><h4>KVKK aydınlatma &amp; rıza</h4><p>Biyometri için ayrı onay; reddedene alternatif</p></div><span class="t">15 sn</span></div>
+        <div class="s"><span class="n">10</span><div><h4>Özet &amp; yönlendirme</h4><p>Oda no, kat haritası, Wi‑Fi QR'ı, SMS/e‑posta</p></div><span class="t">5 sn</span></div>
+      </div>
+      <div style="display:flex;gap:12px;margin-top:auto">
+        <div class="band" style="flex:1;font-size:13px"><svg class="ic" style="color:#5FD3CA"><use href="#i-video"/></svg><div><b>Her ekranda “Yardım” butonu</b> → görüntülü uzaktan resepsiyonist bağlanır.</div></div>
+        <div class="band" style="flex:1;font-size:13px;background:var(--accent-d)"><svg class="ic" style="color:#fff"><use href="#i-phone"/></svg><div><b style="color:#fff">Ön check‑in yapanlar</b> için sadece 3 adım: QR → yüz → anahtar (~30 sn).</div></div>
+      </div>
+    </div>
+    <div class="screen">
+      <div class="in">
+        <div class="top"><span>LOBİ · Adım 4 / 10</span><span>TR</span></div>
+        <div class="prog"><i></i></div>
+        <h5>Yüz doğrulama</h5>
+        <div style="font-size:11.5px;color:var(--muted);margin-top:4px">Lütfen kameraya bakın ve hafifçe başınızı çevirin.</div>
+        <div class="cam">
+          <svg viewBox="0 0 150 150" width="142" height="142" style="position:absolute;inset:0;margin:auto">
+            <circle cx="75" cy="62" r="26" fill="#9FAEBE"/>
+            <path d="M28 150c4-30 24-46 47-46s43 16 47 46" fill="#9FAEBE"/>
+            <g stroke="#0E9F97" stroke-width="3" fill="none" stroke-linecap="round"><path d="M42 40v-12h12M96 28h12v12M108 92v12H96M54 104H42V92"/></g>
+          </svg>
+        </div>
+        <div class="ok"><svg class="ic" style="width:18px;height:18px"><use href="#i-check"/></svg>Kimliğinizdeki fotoğrafla eşleşti</div>
+        <div class="sub2">Canlılık testi başarılı · Görüntü saklanmaz</div>
+        <div class="langs"><span>TR</span><span>EN</span><span>DE</span><span>RU</span><span>AR</span><span>+15</span></div>
+        <div class="btn">Devam</div>
+        <div class="btn2"><svg class="ic" style="width:15px;height:15px"><use href="#i-video"/></svg>Yardım (görüntülü görüşme)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 8 · KİOSK DONANIMI -->
+<section class="slide">
+  <div class="kicker"><span class="sec">03</span>Kiosk donanımı</div>
+  <h2>Lobideki tek “resepsiyonist”: neler içeriyor?</h2>
+  <div class="bd" style="display:grid;grid-template-columns:400px 1fr;gap:26px">
+    <svg viewBox="0 0 400 500" width="400" height="500" style="margin-top:-12px">
+      <rect x="130" y="10" width="150" height="470" rx="18" fill="#fff" stroke="#0F1C2E" stroke-width="2"/>
+      <circle cx="205" cy="32" r="7" fill="#24395A"/><circle cx="187" cy="32" r="2.5" fill="#8592A4"/><circle cx="223" cy="32" r="2.5" fill="#8592A4"/>
+      <rect x="143" y="52" width="124" height="176" rx="6" fill="#0F1C2E"/>
+      <rect x="155" y="70" width="70" height="8" rx="4" fill="#5FD3CA"/>
+      <rect x="155" y="86" width="100" height="5" rx="2.5" fill="#2E4668"/>
+      <rect x="155" y="97" width="86" height="5" rx="2.5" fill="#2E4668"/>
+      <circle cx="205" cy="150" r="30" fill="none" stroke="#5FD3CA" stroke-width="2.5"/>
+      <rect x="160" y="200" width="90" height="14" rx="7" fill="#0E9F97"/>
+      <rect x="146" y="244" width="118" height="38" rx="5" fill="#E7EBF0" stroke="#0F1C2E" stroke-width="1.5"/>
+      <rect x="162" y="254" width="86" height="18" rx="2" fill="#C8D1DC"/>
+      <rect x="146" y="296" width="54" height="74" rx="7" fill="#E7EBF0" stroke="#0F1C2E" stroke-width="1.5"/>
+      <rect x="153" y="303" width="40" height="20" rx="2" fill="#0F1C2E"/>
+      <g fill="#8592A4"><circle cx="160" cy="334" r="2.4"/><circle cx="173" cy="334" r="2.4"/><circle cx="186" cy="334" r="2.4"/><circle cx="160" cy="345" r="2.4"/><circle cx="173" cy="345" r="2.4"/><circle cx="186" cy="345" r="2.4"/><circle cx="160" cy="356" r="2.4"/><circle cx="173" cy="356" r="2.4"/><circle cx="186" cy="356" r="2.4"/></g>
+      <rect x="210" y="300" width="54" height="9" rx="4.5" fill="#0F1C2E"/>
+      <rect x="210" y="322" width="54" height="6" rx="3" fill="#0F1C2E"/>
+      <rect x="210" y="340" width="54" height="30" rx="5" fill="#E7EBF0" stroke="#0F1C2E" stroke-width="1.5"/>
+      <rect x="219" y="350" width="36" height="10" rx="2" fill="#0E9F97" opacity=".55"/>
+      <g stroke="#8592A4" stroke-width="2.5" stroke-linecap="round"><path d="M168 396h74M168 405h74M168 414h74"/></g>
+      <rect x="150" y="430" width="110" height="36" rx="5" fill="none" stroke="#8592A4" stroke-width="1.5" stroke-dasharray="4 4"/>
+      <text x="205" y="452" text-anchor="middle" font-family="Inter" font-size="10.5" font-weight="600" fill="#5D6A7D">PC · NPU · UPS</text>
+      <rect x="110" y="480" width="190" height="12" rx="6" fill="#0F1C2E"/>
+      <!-- callouts -->
+      <g stroke="#0E9F97" stroke-width="1.5" fill="none">
+        <path d="M143 140H82"/><path d="M146 263H82"/><path d="M146 333H82"/><path d="M168 405H82"/>
+        <path d="M212 32H318"/><path d="M264 304H318"/><path d="M264 325l20 13h34"/><path d="M264 355l20 17h34"/><path d="M260 448H318"/>
+      </g>
+      <g font-family="Inter" font-size="11.5" font-weight="700" fill="#fff" text-anchor="middle">
+        <circle cx="70" cy="140" r="12" fill="#0E9F97"/><text x="70" y="144">1</text>
+        <circle cx="330" cy="32" r="12" fill="#0E9F97"/><text x="330" y="36">2</text>
+        <circle cx="70" cy="263" r="12" fill="#0E9F97"/><text x="70" y="267">3</text>
+        <circle cx="70" cy="333" r="12" fill="#0E9F97"/><text x="70" y="337">4</text>
+        <circle cx="330" cy="304" r="12" fill="#0E9F97"/><text x="330" y="308">5</text>
+        <circle cx="330" cy="338" r="12" fill="#0E9F97"/><text x="330" y="342">6</text>
+        <circle cx="330" cy="372" r="12" fill="#0E9F97"/><text x="330" y="376">7</text>
+        <circle cx="70" cy="405" r="12" fill="#0E9F97"/><text x="70" y="409">8</text>
+        <circle cx="330" cy="448" r="12" fill="#0E9F97"/><text x="330" y="452">9</text>
+      </g>
+    </svg>
+    <div>
+      <div class="cl">
+        <div class="c"><span class="b">1</span><div><h4>24–27" dokunmatik ekran</h4><p>Yüksek parlaklık, parlama önleyici, darbeye dayanıklı cam</p></div></div>
+        <div class="c"><span class="b">6</span><div><h4>Termal yazıcı (opsiyonel)</h4><p>Varsayılan dijital; istenirse fiş ve oda bilgisi</p></div></div>
+        <div class="c"><span class="b">2</span><div><h4>3D / IR yüz kamerası</h4><p>Canlılık testi için derinlik algılama; ayrıca geniş açılı güvenlik kamerası</p></div></div>
+        <div class="c"><span class="b">7</span><div><h4>QR / barkod okuyucu</h4><p>Rezervasyon QR'ı, ön check‑in kodu</p></div></div>
+        <div class="c"><span class="b">3</span><div><h4>Kimlik &amp; pasaport okuyucu</h4><p>MRZ/OCR + NFC çip okuma (ICAO 9303), T.C. kimlik kartı desteği</p></div></div>
+        <div class="c"><span class="b">8</span><div><h4>Mikrofon + hoparlör</h4><p>Görüntülü destek ve sesli AI asistan; gürültü engelleme</p></div></div>
+        <div class="c"><span class="b">4</span><div><h4>POS cihazı</h4><p>Temassız kart, Apple Pay / Google Pay, ön provizyon; PCI‑DSS sertifikalı</p></div></div>
+        <div class="c"><span class="b">9</span><div><h4>Endüstriyel PC + NPU, UPS</h4><p>Yerel yüz işleme; elektrik kesintisinde çalışmaya devam; 4G/5G yedek hat</p></div></div>
+        <div class="c"><span class="b">5</span><div><h4>RFID kart dağıtıcı &amp; kodlayıcı</h4><p>Biyometri veya telefon istemeyen misafir için yedek anahtar</p></div></div>
+        <div class="c"><span class="b o">+</span><div><h4>Erişilebilirlik</h4><p>Tekerlekli sandalye için alçak ekran modu, sesli yönlendirme, kulaklık girişi</p></div></div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;align-items:center">
+        <span class="note" style="margin-right:4px">Opsiyonel modüller:</span>
+        <span class="pill gray">Akıllı bagaj dolabı</span><span class="pill gray">Kart iade yuvası</span><span class="pill gray">İkinci (alçak) ekran</span><span class="pill gray">Duvar tipi mini kiosk</span><span class="pill gray">Tablet kiosk (küçük tesis)</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 9 · AKILLI KAPI -->
+<section class="slide">
+  <div class="kicker"><span class="sec">03</span>Akıllı kapı ünitesi</div>
+  <h2>Kapı misafirini tanır, koridoru izlemez</h2>
+  <div class="bd" style="display:grid;grid-template-columns:380px 1fr;gap:28px">
+    <svg viewBox="0 0 380 480" width="380" height="480" style="margin-top:-10px">
+      <rect x="120" y="12" width="140" height="420" rx="24" fill="#fff" stroke="#0F1C2E" stroke-width="2"/>
+      <rect x="148" y="36" width="84" height="32" rx="16" fill="#0F1C2E"/>
+      <circle cx="190" cy="52" r="9" fill="#24395A" stroke="#5FD3CA" stroke-width="2"/>
+      <circle cx="162" cy="52" r="3" fill="#E39B2D"/><circle cx="218" cy="52" r="3" fill="#E39B2D"/>
+      <rect x="142" y="86" width="96" height="64" rx="7" fill="#0F1C2E"/>
+      <text x="190" y="112" text-anchor="middle" font-family="Inter" font-size="11" font-weight="600" fill="#5FD3CA">Hoş geldiniz</text>
+      <text x="190" y="132" text-anchor="middle" font-family="Inter" font-size="15" font-weight="700" fill="#E8EDF4">Oda 204</text>
+      <circle cx="190" cy="190" r="26" fill="#F1F4F7" stroke="#C8D1DC" stroke-width="1.5"/>
+      <g transform="translate(178,178)" fill="none" stroke="#0E9F97" stroke-width="1.8" stroke-linecap="round"><path d="M6 8.5a5 5 0 0 1 0 7M9.5 6a8.5 8.5 0 0 1 0 12M13 3.5a12 12 0 0 1 0 17"/></g>
+      <g fill="#C8D1DC">
+        <circle cx="166" cy="240" r="7"/><circle cx="190" cy="240" r="7"/><circle cx="214" cy="240" r="7"/>
+        <circle cx="166" cy="262" r="7"/><circle cx="190" cy="262" r="7"/><circle cx="214" cy="262" r="7"/>
+        <circle cx="166" cy="284" r="7"/><circle cx="190" cy="284" r="7"/><circle cx="214" cy="284" r="7"/>
+        <circle cx="190" cy="306" r="7"/>
+      </g>
+      <rect x="150" y="328" width="80" height="5" rx="2.5" fill="#2E8B57"/>
+      <rect x="168" y="352" width="160" height="20" rx="10" fill="#C9D2DE" stroke="#0F1C2E" stroke-width="1.5"/>
+      <circle cx="190" cy="362" r="13" fill="#fff" stroke="#0F1C2E" stroke-width="1.5"/>
+      <circle cx="190" cy="404" r="10" fill="#E7EBF0" stroke="#0F1C2E" stroke-width="1.5"/>
+      <path d="M190 398v12" stroke="#0F1C2E" stroke-width="2" stroke-linecap="round"/>
+      <g stroke="#0E9F97" stroke-width="1.5" fill="none">
+        <path d="M148 52H96"/><path d="M142 118H96"/><path d="M216 190h102"/><path d="M158 262H96"/><path d="M230 330h88"/><path d="M180 404H96"/>
+      </g>
+      <g font-family="Inter" font-size="11.5" font-weight="700" fill="#fff" text-anchor="middle">
+        <circle cx="84" cy="52" r="12" fill="#0E9F97"/><text x="84" y="56">1</text>
+        <circle cx="84" cy="118" r="12" fill="#0E9F97"/><text x="84" y="122">2</text>
+        <circle cx="330" cy="190" r="12" fill="#0E9F97"/><text x="330" y="194">3</text>
+        <circle cx="84" cy="262" r="12" fill="#0E9F97"/><text x="84" y="266">4</text>
+        <circle cx="330" cy="330" r="12" fill="#0E9F97"/><text x="330" y="334">5</text>
+        <circle cx="84" cy="404" r="12" fill="#0E9F97"/><text x="84" y="408">6</text>
+      </g>
+    </svg>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="g2" style="gap:14px">
+        <div class="card" style="padding:14px 16px"><h3>Dış yüz (koridor tarafı)</h3>
+          <ul class="ticks"><li><b>1 · Kamera:</b> RGB + IR + 3D/ToF; gece görüşü, canlılık testi</li><li><b>2 · Mini ekran:</b> isimle karşılama, “rahatsız etmeyin”, temizlik durumu</li><li><b>3 · NFC / BLE:</b> mobil anahtar, Apple Wallet, yedek kart</li><li><b>4 · PIN tuş takımı:</b> konaklamaya özel 6 haneli kod</li><li><b>5 · Durum ışığı</b> ve görüntülü zil (misafirin telefonuna)</li></ul></div>
+        <div class="card" style="padding:14px 16px"><h3>İç taraf &amp; güvenlik</h3>
+          <ul class="ticks"><li>İçeriden her zaman tek hareketle çıkış (yangın yönetmeliği)</li><li><b>6 · Mekanik acil silindir:</b> yönetim ve itfaiye için</li><li>Kapı açık kaldı, zorlama ve kurcalama sensörleri</li><li>Yangın alarmı entegrasyonu</li><li>Kim, ne zaman, hangi yöntemle açtı: değiştirilemez kayıt</li></ul></div>
+      </div>
+      <div class="g2" style="gap:14px">
+        <div class="card" style="padding:14px 16px"><h3>Altyapı</h3>
+          <ul class="ticks"><li><b>Güç:</b> PoE veya kablolu besleme + yedek pil (kilit motoru pille aylarca)</li><li><b>Çevrimdışı çalışma:</b> yetki listesi cihazda; internet kesilse de kapı açılır</li><li><b>Uç işlemci (NPU):</b> doğrulama &lt; 1 saniye, buluta görüntü gitmez</li></ul></div>
+        <div class="card" style="padding:14px 16px;background:var(--accent-l);border-color:#BFE5E1"><div class="row" style="gap:10px;align-items:center"><div class="ibox sm" style="background:#fff"><svg class="ic"><use href="#i-eyeoff"/></svg></div><h3 class="accent">Gizlilik tasarımı</h3></div>
+          <ul class="ticks"><li>Kamera yalnızca yakınlık sensörü tetiklenince kısa süre açılır</li><li>Sürekli video kaydı yok; koridor izlenmez</li><li>Sadece o odaya yetkili 1–4 kişiyle karşılaştırma yapılır</li></ul></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 10 · DİJİTAL ANAHTAR -->
+<section class="slide">
+  <div class="kicker"><span class="sec">03</span>Dijital anahtar seçenekleri</div>
+  <h2>Misafir istediği yöntemi seçer; biyometri asla zorunlu değil</h2>
+  <div class="bd" style="display:flex;flex-direction:column;gap:14px">
+    <div class="g3" style="flex:1;min-height:0">
+      <div class="card"><div class="row" style="align-items:center"><div class="ibox"><svg class="ic"><use href="#i-face"/></svg></div><h3>Yüz</h3></div><p style="margin-top:10px">Eller serbest: valiz, bebek arabası taşırken ideal. Kapıya yaklaşmak yeterli, &lt; 1 saniyede açılır.</p><div style="margin-top:10px"><span class="pill">Rıza veren yetişkin misafirler</span></div></div>
+      <div class="card"><div class="row" style="align-items:center"><div class="ibox"><svg class="ic"><use href="#i-phone"/></svg></div><h3>Mobil anahtar</h3></div><p style="margin-top:10px">Uygulama içi Bluetooth/NFC anahtar ve destekleyen kilitlerde Apple Wallet otel anahtarı. Telefonu kapıya yaklaştır.</p><div style="margin-top:10px"><span class="pill">Akıllı telefon kullanıcıları</span></div></div>
+      <div class="card"><div class="row" style="align-items:center"><div class="ibox"><svg class="ic"><use href="#i-pad"/></svg></div><h3>PIN kodu</h3></div><p style="margin-top:10px">Konaklamaya özel 6 haneli kod; belirli sayıda hatalı denemede geçici kilitlenme ve görevliye uyarı.</p><div style="margin-top:10px"><span class="pill">Herkes için yedek yöntem</span></div></div>
+      <div class="card"><div class="row" style="align-items:center"><div class="ibox"><svg class="ic"><use href="#i-card"/></svg></div><h3>RFID kart</h3></div><p style="margin-top:10px">Biyometri ya da telefon istemeyen misafir için kiosk'tan basılır. Check‑out'ta yetkisi otomatik düşer.</p><div style="margin-top:10px"><span class="pill gray">Geleneksel tercih edenler</span></div></div>
+      <div class="card"><div class="row" style="align-items:center"><div class="ibox amber"><svg class="ic"><use href="#i-users"/></svg></div><h3>Paylaşılan anahtar</h3></div><p style="margin-top:10px">Ana misafir, odadaki diğer kişilere (eş, arkadaş) uygulamadan anahtar gönderir; istediği an geri alır.</p><div style="margin-top:10px"><span class="pill amber">Aileler, gruplar</span></div></div>
+      <div class="card"><div class="row" style="align-items:center"><div class="ibox amber"><svg class="ic"><use href="#i-clock"/></svg></div><h3>Süreli personel anahtarı</h3></div><p style="margin-top:10px">Housekeeping ve teknik ekip yalnızca görev atanan odaya, yalnızca görev saatinde girer. Her giriş kayıtlı.</p><div style="margin-top:10px"><span class="pill amber">Otel personeli</span></div></div>
+    </div>
+    <div class="band" style="font-size:13.5px"><svg class="ic" style="color:#5FD3CA"><use href="#i-shield"/></svg><div><b>Kural:</b> biyometriyi reddeden misafir hiçbir hizmetten mahrum kalmaz (KVKK). Telefon kaybolursa kiosk'ta yüz veya kimlikle saniyeler içinde yeni anahtar.</div></div>
+  </div>
+</section>
+
+<!-- 11 · KİMLİK & YASAL BİLDİRİM -->
+<section class="slide">
+  <div class="kicker"><span class="sec">04</span>Kimlik doğrulama &amp; yasal bildirim</div>
+  <h2>Kimliği çipten doğrula, yasal işleri otomatik yap</h2>
+  <div class="bd" style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+    <div>
+      <div class="note" style="font-weight:650;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px">Doğrulama zinciri</div>
+      <div style="position:relative;padding-left:4px">
+        <div style="position:absolute;left:22px;top:20px;bottom:30px;width:2px;background:var(--accent-l)"></div>
+        <div class="row" style="padding:9px 0"><div class="ibox" style="position:relative"><svg class="ic"><use href="#i-id"/></svg></div><div><h3 style="font-size:17px;font-weight:650">1 · Belge gerçek mi?</h3><p class="small muted" style="line-height:1.45;margin-top:3px">Çip okunur, dijital imzası kontrol edilir (Passive Authentication, ICAO 9303). Sahte veya oynanmış belge tespit edilir.</p></div></div>
+        <div class="row" style="padding:9px 0"><div class="ibox" style="position:relative"><svg class="ic"><use href="#i-camera"/></svg></div><div><h3 style="font-size:17px;font-weight:650">2 · Karşıdaki gerçek bir insan mı?</h3><p class="small muted" style="line-height:1.45;margin-top:3px">Canlılık testi (PAD): fotoğraf, ekran, maske saldırılarına karşı. ISO/IEC 30107‑3 uyumlu, iBeta Seviye 2 sertifikalı motor tercih edilir.</p></div></div>
+        <div class="row" style="padding:9px 0"><div class="ibox" style="position:relative"><svg class="ic"><use href="#i-face"/></svg></div><div><h3 style="font-size:17px;font-weight:650">3 · Belgenin sahibi mi?</h3><p class="small muted" style="line-height:1.45;margin-top:3px">Çipteki vesikalık fotoğraf ile canlı görüntü 1:1 eşleştirilir. Eşik altı sonuçta ikinci deneme, ardından görüntülü görevli onayı.</p></div></div>
+        <div class="row" style="padding:9px 0"><div class="ibox" style="position:relative"><svg class="ic"><use href="#i-users"/></svg></div><div><h3 style="font-size:17px;font-weight:650">4 · Kurallar uygun mu?</h3><p class="small muted" style="line-height:1.45;margin-top:3px">Rezervasyondaki isim/kişi sayısı, yaş kontrolü (18 yaş altı tek başına giriş kuralları), kara liste ve ödeme kontrolü.</p></div></div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="note" style="font-weight:650;letter-spacing:.08em;text-transform:uppercase">Türkiye'ye özel otomasyonlar</div>
+      <div class="card" style="padding:14px 16px"><div class="row" style="align-items:center"><div class="ibox sm amber"><svg class="ic"><use href="#i-shield"/></svg></div><h3>KBS — Kimlik Bildirme Sistemi</h3></div><p>1774 sayılı Kimlik Bildirme Kanunu gereği konaklayanların Emniyet / Jandarma'ya bildirimi, kiosk'ta okunan kimlik verisiyle otomatik yapılır; giriş‑çıkış anında güncellenir.</p></div>
+      <div class="card" style="padding:14px 16px"><div class="row" style="align-items:center"><div class="ibox sm amber"><svg class="ic"><use href="#i-doc"/></svg></div><h3>e‑Fatura / e‑Arşiv (GİB)</h3></div><p>Check‑out'ta fatura otomatik kesilir, e‑postaya gönderilir. KDV ve konaklama vergisi otomatik hesaplanır.</p></div>
+      <div class="card" style="padding:14px 16px"><div class="row" style="align-items:center"><div class="ibox sm amber"><svg class="ic"><use href="#i-globe"/></svg></div><h3>Yabancı misafirler</h3></div><p>Pasaport MRZ + çip okuma; uyruk, belge no, giriş bilgileri KBS formatında hazırlanır. Arayüz 20+ dilde.</p></div>
+      <div class="note">KBS entegrasyon yöntemi (yetkili yazılım/PMS üzerinden veya doğrudan) ilgili il emniyet / jandarma birimiyle netleştirilmelidir.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 12 · YÜZ DOĞRULAMA MİMARİSİ -->
+<section class="slide">
+  <div class="kicker"><span class="sec">04</span>Yüz doğrulama mimarisi</div>
+  <h2>Gizlilik öncelikli tasarım: 1:1 eşleştir, kapıda doğrula, çıkışta sil</h2>
+  <div class="bd" style="display:flex;flex-direction:column;gap:18px">
+    <div class="flow">
+      <div class="fs"><span class="k">KİOSK</span><div class="ibox sm"><svg class="ic"><use href="#i-id"/></svg></div><h4>Kimlik çipinden fotoğraf</h4><p>Resmî, imzalı kaynak</p></div>
+      <div class="ar"><svg class="ic"><use href="#i-arrow"/></svg></div>
+      <div class="fs"><span class="k">KİOSK</span><div class="ibox sm"><svg class="ic"><use href="#i-camera"/></svg></div><h4>Canlı görüntü + canlılık</h4><p>3D/IR kamera</p></div>
+      <div class="ar"><svg class="ic"><use href="#i-arrow"/></svg></div>
+      <div class="fs"><span class="k">KİOSK</span><div class="ibox sm"><svg class="ic"><use href="#i-face"/></svg></div><h4>1:1 eşleştirme</h4><p>“Bu kişi belgenin sahibi mi?”</p></div>
+      <div class="ar"><svg class="ic"><use href="#i-arrow"/></svg></div>
+      <div class="fs"><span class="k">BULUT</span><div class="ibox sm amber"><svg class="ic"><use href="#i-lock"/></svg></div><h4>Rıza → şifreli şablon</h4><p>Ham foto değil, vektör</p></div>
+      <div class="ar"><svg class="ic"><use href="#i-arrow"/></svg></div>
+      <div class="fs"><span class="k">KAPI</span><div class="ibox sm"><svg class="ic"><use href="#i-door"/></svg></div><h4>Sadece o kapıya yetki</h4><p>Cihazda, &lt; 1 sn doğrulama</p></div>
+      <div class="ar"><svg class="ic"><use href="#i-arrow"/></svg></div>
+      <div class="fs" style="background:var(--ink);border-color:var(--ink);color:var(--d-text)"><span class="k" style="color:#6F819B">HER YERDE</span><div class="ibox sm dk"><svg class="ic"><use href="#i-trash"/></svg></div><h4>Check‑out → otomatik silme</h4><p style="color:var(--d-muted)">Kiosk, bulut ve kapıdan</p></div>
+    </div>
+    <div class="g3" style="flex:1;min-height:0">
+      <div class="card"><h3>1:N değil, “1:az”</h3><p>Kapı yalnızca o odaya kayıtlı 1–4 kişiyle karşılaştırma yapar. Kalabalık tarama, kişi takibi ya da veri tabanında arama yoktur.</p></div>
+      <div class="card"><h3>Ham görüntü saklanmaz</h3><p>Yalnızca geri döndürülemez yüz şablonu (embedding) tutulur; AES‑256 ile şifreli, anahtarlar KMS/HSM'de.</p></div>
+      <div class="card"><h3>Uçta (edge) işlem</h3><p>Doğrulama kapı ünitesinin içinde yapılır: hızlı, internetsiz çalışır ve buluta yüz görüntüsü gitmez.</p></div>
+      <div class="card"><h3>Süreli yetki</h3><p>Şablon check‑out saati + kısa tolerans sonunda kendiliğinden geçersiz olur ve silinir. Silme işlemi loglanır.</p></div>
+      <div class="card"><h3>Ölçülebilir doğruluk</h3><p>Hedef: yanlış kabul (FAR) ≤ 1/100.000, yanlış ret (FRR) ≤ %2. Pilotta gerçek koşullarda kalibre edilir.</p></div>
+      <div class="card"><h3>Adil ve test edilmiş model</h3><p>NIST FRTE (eski FRVT) değerlendirmelerinde başarılı motor; yaş, cinsiyet ve ten rengi gruplarında performans testi.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 13 · KVKK & GÜVENLİK -->
+<section class="slide">
+  <div class="kicker"><span class="sec">04</span>KVKK, gizlilik &amp; siber güvenlik</div>
+  <h2>Biyometri “özel nitelikli veri”: tasarımın merkezinde hukuk var</h2>
+  <div class="bd" style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+    <div class="card" style="padding:18px 20px">
+      <div class="row" style="align-items:center"><div class="ibox amber"><svg class="ic"><use href="#i-doc"/></svg></div><h3 style="font-size:17px">Hukuki uyum</h3></div>
+      <ul class="ticks amb" style="margin-top:8px">
+        <li><b>KVKK m.6:</b> biyometrik veri özel nitelikli kişisel veridir; açık rıza ve Kurul'un öngördüğü ek güvenlik önlemleri gerekir.</li>
+        <li><b>İsteğe bağlılık:</b> rıza vermeyen misafire eşdeğer hizmet (kart, mobil, PIN) sunulur; rıza hizmet şartı yapılmaz.</li>
+        <li><b>Katmanlı aydınlatma:</b> kiosk ekranında kısa özet + QR ile tam metin; rıza kaydı zaman damgalı.</li>
+        <li><b>VERBİS</b> kaydı, veri envanteri, saklama‑imha politikası; KVK Kurumu'nun biyometrik veri rehberine uyum.</li>
+        <li><b>Yurt dışı aktarım (KVKK m.9):</b> veriler Türkiye'deki veri merkezinde; yurt dışı hizmetler için standart sözleşme.</li>
+        <li><b>AB misafirleri:</b> GDPR m.9 ve veri koruma etki analizi (DPIA). AB Yapay Zekâ Yasası'nda 1:1 doğrulama, yüksek riskli “uzaktan biyometrik tanımlama” kapsamı dışındadır.</li>
+        <li><b>Turizm mevzuatı:</b> tesis sınıfına göre resepsiyon / 7‑24 hizmet şartları incelenmeli; uzaktan resepsiyon modeliyle karşılanması planlanır.</li>
+      </ul>
+    </div>
+    <div class="card" style="padding:18px 20px">
+      <div class="row" style="align-items:center"><div class="ibox"><svg class="ic"><use href="#i-shield"/></svg></div><h3 style="font-size:17px">Siber ve fiziksel güvenlik</h3></div>
+      <ul class="ticks" style="margin-top:8px">
+        <li><b>Şifreleme:</b> TLS 1.3, cihazlar arası mTLS; her kiosk ve kapının kendi sertifikalı kimliği.</li>
+        <li><b>Şablon kasası:</b> biyometrik şablonlar ayrı veri tabanında, anahtarlar KMS/HSM'de.</li>
+        <li><b>Ağ ayrımı (VLAN):</b> kapı/IoT, kiosk, ödeme, personel ve misafir Wi‑Fi ağları birbirinden yalıtılmış.</li>
+        <li><b>Cihaz güvenliği:</b> güvenli önyükleme, imzalı firmware, uzaktan (OTA) güncelleme.</li>
+        <li><b>Erişim:</b> rol tabanlı yetki, 2FA, her işlem için değiştirilemez denetim kaydı (audit log).</li>
+        <li><b>Ödeme:</b> kart verisi saklanmaz, tokenizasyon; PCI‑DSS uyumlu sağlayıcı.</li>
+        <li><b>Süreç:</b> yıllık sızma testi, SIEM ile izleme, olay müdahale planı; ISO/IEC 27001 yol haritası.</li>
+        <li><b>Fiziksel:</b> kilitli kiosk kasası, kurcalama alarmı, lobi kamerası.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 14 · SİSTEM MİMARİSİ -->
+<section class="slide">
+  <div class="kicker"><span class="sec">05</span>Sistem mimarisi</div>
+  <h2>Bulut platform + otel içi uç katman + entegrasyonlar</h2>
+  <div class="bd">
+    <div class="arch">
+      <div class="chips5">
+        <div class="chipbox"><svg class="ic"><use href="#i-kiosk"/></svg>Kiosk</div>
+        <div class="chipbox"><svg class="ic"><use href="#i-door"/></svg>Kapı üniteleri</div>
+        <div class="chipbox"><svg class="ic"><use href="#i-phone"/></svg>Misafir uygulaması</div>
+        <div class="chipbox"><svg class="ic"><use href="#i-globe"/></svg>Web ön check‑in</div>
+        <div class="chipbox"><svg class="ic"><use href="#i-chart"/></svg>Yönetim paneli</div>
+      </div>
+      <div class="conn">HTTPS · mTLS · WebSocket</div>
+      <div class="mid">
+        <div class="cloud">
+          <div class="tt"><span style="display:flex;gap:8px;align-items:center"><svg class="ic" style="color:#5FD3CA"><use href="#i-cloud"/></svg>LOBİ bulut platformu</span><span class="pill dk">Türkiye'de barındırılır · çok kiracılı (SaaS)</span></div>
+          <div class="gw">API Gateway · kimlik doğrulama · yetkilendirme · olay yolu</div>
+          <div class="svc">
+            <div>Rezervasyon &amp; oda<small>müsaitlik, atama, durum</small></div>
+            <div class="hl">Kimlik &amp; biyometri<small>belge, canlılık, şablon</small></div>
+            <div class="hl">Anahtar &amp; erişim<small>yüz, mobil, PIN, kart yetkileri</small></div>
+            <div>Ödeme &amp; folio<small>provizyon, ekstra satışlar</small></div>
+            <div class="hl">Wi‑Fi &amp; hotspot<small>RADIUS, portal, 5651 log</small></div>
+            <div>Mevzuat<small>KBS, e‑Fatura / e‑Arşiv</small></div>
+            <div>Bildirim<small>SMS, e‑posta, push, WhatsApp</small></div>
+            <div>AI asistan<small>çok dilli, bilgi tabanı</small></div>
+            <div>Analitik &amp; rapor<small>gelir, doluluk, KPI</small></div>
+          </div>
+          <div class="dataline"><span>PostgreSQL</span><span>Redis</span><span>Şifreli şablon kasası (KMS/HSM)</span><span>Olay akışı (NATS/Kafka)</span><span>Log &amp; SIEM</span></div>
+        </div>
+        <div class="ext">
+          <h5>Dış entegrasyonlar</h5>
+          <ul style="margin-top:4px">
+            <li><b>Otel programı (PMS)</b> <span>· OPERA, Mews, Elektraweb…</span></li>
+            <li><b>Kanal yöneticisi</b> <span>· HotelRunner, SiteMinder…</span></li>
+            <li><b>Mevcut Wi‑Fi hotspot</b> <span>· RADIUS / API</span></li>
+            <li><b>Ödeme</b> <span>· sanal POS, fiziksel POS</span></li>
+            <li><b>KBS</b> <span>· Emniyet / Jandarma</span></li>
+            <li><b>GİB</b> <span>· e‑Fatura / e‑Arşiv</span></li>
+            <li><b>Apple Wallet</b> <span>· mobil oda anahtarı</span></li>
+            <li><b>SMS / WhatsApp / e‑posta</b></li>
+          </ul>
+        </div>
+      </div>
+      <div class="conn">VPN · MQTT over TLS</div>
+      <div class="edge">
+        <div class="eg"><svg class="ic"><use href="#i-server"/></svg>Otel içi edge gateway</div>
+        <div class="dv"><span>Kioskler</span><span>Kapı üniteleri</span><span>Wi‑Fi AP &amp; kontrolcü</span><span>Oda IoT (klima, ışık, perde)</span><span>Asansör</span><span>Otopark bariyeri (plaka)</span><span>CCTV / NVR</span></div>
+        <span class="pill" style="background:#fff;margin-left:auto">İnternet kesilse de çalışır</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 15 · PMS ENTEGRASYONU -->
+<section class="slide">
+  <div class="kicker"><span class="sec">05</span>Otel programı (PMS) entegrasyonu</div>
+  <h2>Mevcut otel programıyla çift yönlü, gerçek zamanlı çalışır</h2>
+  <p class="lead">LOBİ otelin programının yerine geçmez, onunla konuşur. Programı olmayan küçük tesisler için ise dahili “LOBİ PMS Lite” sunulur.</p>
+  <div class="bd" style="display:grid;grid-template-columns:1fr 1fr 330px;gap:16px;margin-top:20px">
+    <div class="card" style="padding:16px 18px">
+      <div class="row" style="align-items:center"><div class="ibox sm"><svg class="ic"><use href="#i-sync"/></svg></div><h3>Veri akışı</h3></div>
+      <div class="note" style="font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-top:12px;color:var(--accent-d)">PMS → LOBİ</div>
+      <ul class="ticks" style="margin-top:2px"><li>Rezervasyon: yeni, değişiklik, iptal</li><li>Oda tipi, oda ataması, temizlik durumu</li><li>Folio bakiyesi ve fiyatlar</li><li>Misafir profili ve tercihleri</li></ul>
+      <div class="note" style="font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-top:12px;color:var(--amber-d)">LOBİ → PMS</div>
+      <ul class="ticks amb" style="margin-top:2px"><li>Check‑in / check‑out olayları</li><li>Kimlik ve misafir bilgileri (KBS için)</li><li>Ödeme, provizyon, ekstra satışlar (folioya)</li><li>Oda değişikliği, “temizlik bitti” bilgisi</li><li>Anahtar üretme / iptal kayıtları</li></ul>
+    </div>
+    <div class="card" style="padding:16px 18px">
+      <div class="row" style="align-items:center"><div class="ibox sm"><svg class="ic"><use href="#i-link"/></svg></div><h3>Bağlantı yöntemleri</h3></div>
+      <ul class="ticks" style="margin-top:8px">
+        <li><b>Bulut PMS'ler:</b> REST API ve webhook (ör. OPERA Cloud, Mews, Cloudbeds)</li>
+        <li><b>Yerli PMS'ler:</b> API veya ara katman (ör. Elektraweb ve benzerleri)</li>
+        <li><b>Kurulu (on‑premise) sistemler:</b> FIAS, HTNG / OTA XML arayüzleri</li>
+        <li><b>OTA rezervasyonları:</b> kanal yöneticisi üzerinden (ör. HotelRunner, SiteMinder)</li>
+        <li><b>Adaptör mimarisi:</b> her PMS için ayrı “connector”, çekirdek değişmez; yeni PMS eklemek haftalar sürer, aylar değil</li>
+        <li><b>Güvence:</b> olay kuyruğu, tekrar deneme, gece mutabakat (reconciliation) raporu ve çakışma uyarısı</li>
+      </ul>
+    </div>
+    <div class="dkp" style="background:var(--ink);border-radius:14px;padding:18px 20px;color:var(--d-text);display:flex;flex-direction:column">
+      <span class="pill dk" style="align-self:flex-start">Opsiyonel modül</span>
+      <div style="font-family:'Inter Display',Inter;font-size:21px;font-weight:700;margin-top:10px">LOBİ PMS Lite</div>
+      <div class="lead" style="font-size:13px;margin-top:4px">10–60 odalı butik otel, apart ve pansiyonlar için hafif otel programı.</div>
+      <ul class="ticks" style="margin-top:8px">
+        <li>Rezervasyon takvimi ve oda planı</li><li>Fiyat ve müsaitlik yönetimi</li><li>Kanal yöneticisi bağlantısı</li><li>Kasa, folio, e‑Fatura, KBS</li><li>Housekeeping ve raporlar</li>
+      </ul>
+      <div style="margin-top:auto;padding-top:12px;border-top:1px solid var(--ink4);font-size:13px;line-height:1.4"><b style="color:#5FD3CA">Tek abonelik:</b> otel programı + kiosk + akıllı kapı + Wi‑Fi</div>
+    </div>
+  </div>
+</section>
+
+<!-- 16 · WI-FI HOTSPOT -->
+<section class="slide">
+  <div class="kicker"><span class="sec">05</span><span lang="en">Wi‑Fi</span> hotspot</div>
+  <h2>Mevcut hotspot'a bağlan ya da LOBİ Wi‑Fi ile anahtar teslim kur</h2>
+  <div class="bd" style="display:flex;flex-direction:column;gap:14px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;flex:1;min-height:0">
+      <div class="card" style="padding:16px 18px">
+        <div class="row" style="align-items:center"><div class="ibox"><svg class="ic"><use href="#i-link"/></svg></div><div><div class="note" style="font-weight:700;letter-spacing:.06em">MOD A</div><h3>Entegrasyon modu</h3></div><span class="pill gray" style="margin-left:auto">Mevcut altyapı korunur</span></div>
+        <ul class="ticks" style="margin-top:10px">
+          <li>Otelin mevcut hotspot / captive portal sistemine <b>RADIUS</b> veya API ile bağlanır.</li>
+          <li>Check‑in anında misafire özel Wi‑Fi kimliği üretilir; ya da “oda no + soyad” girişi LOBİ/PMS üzerinden doğrulanır.</li>
+          <li>Check‑out'ta erişim otomatik sonlanır; oda değişikliğinde taşınır.</li>
+          <li>Yaygın donanımlarla uyum hedeflenir (ör. MikroTik, Cisco Meraki, Ruckus, Aruba, UniFi).</li>
+          <li>Giriş yöntemleri: kiosk QR'ı, oda no + soyad, SMS doğrulama.</li>
+          <li>Kurulum maliyeti en düşük seçenek; mevcut otellere satışta varsayılan.</li>
+        </ul>
+      </div>
+      <div class="card" style="padding:16px 18px;border:1.5px solid var(--accent)">
+        <div class="row" style="align-items:center"><div class="ibox"><svg class="ic"><use href="#i-wifi"/></svg></div><div><div class="note" style="font-weight:700;letter-spacing:.06em;color:var(--accent-d)">MOD B</div><h3>LOBİ Wi‑Fi (kendi hotspot sistemimiz)</h3></div><span class="pill" style="margin-left:auto">Anahtar teslim</span></div>
+        <ul class="ticks" style="margin-top:10px">
+          <li>Bulut yönetimli erişim noktaları (Wi‑Fi 6/6E/7) + kontrolcü + RADIUS + markalı, çok dilli karşılama sayfası.</li>
+          <li><b>5651 sayılı Kanun uyumu dahil:</b> iç IP dağıtım kayıtları, zaman damgası ve mevzuatta öngörülen süre boyunca güvenli saklama.</li>
+          <li>Bant genişliği paketleri: ücretsiz standart, ücretli <b>premium internet</b> (upsell).</li>
+          <li>Ayrı ağlar: misafir, personel, kapı/IoT, kiosk, ödeme (VLAN).</li>
+          <li>Uzaktan izleme, AP arıza alarmı, kullanım raporları.</li>
+          <li>Gelir: Wi‑Fi modülü aboneliği + premium internet satışı.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card" style="padding:14px 18px">
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:nowrap">
+        <span class="note" style="font-weight:700;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;margin-right:4px">Misafir deneyimi</span>
+        <span class="pill">Kiosk özet ekranı</span><svg class="ic" style="color:var(--soft);width:16px"><use href="#i-arrow"/></svg>
+        <span class="pill">Wi‑Fi QR kodu</span><svg class="ic" style="color:var(--soft);width:16px"><use href="#i-arrow"/></svg>
+        <span class="pill">Otomatik bağlanma (WPA3 / Passpoint)</span><svg class="ic" style="color:var(--soft);width:16px"><use href="#i-arrow"/></svg>
+        <span class="pill">Konaklama boyunca tanınır</span><svg class="ic" style="color:var(--soft);width:16px"><use href="#i-arrow"/></svg>
+        <span class="pill gray">Check‑out'ta kapanır</span>
+      </div>
+    </div>
+    <div class="band" style="font-size:13.5px"><svg class="ic" style="color:#5FD3CA"><use href="#i-spark"/></svg><div><b>Öneri:</b> mevcut otellerde Mod A ile hızlı başla; yeni açılan veya altyapısı eskimiş tesislere Mod B'yi ayrı abonelik modülü olarak sun.</div></div>
+  </div>
+</section>
+
+<!-- 17 · TEKNOLOJİ YIĞINI -->
+<section class="slide">
+  <div class="kicker"><span class="sec">05</span>Teknoloji yığını</div>
+  <h2>Önerilen teknolojiler</h2>
+  <div class="bd">
+    <table class="tbl tight">
+      <thead><tr><th style="width:190px">Katman</th><th>Öneri</th><th style="width:360px">Neden / not</th></tr></thead>
+      <tbody>
+        <tr><td>Kiosk &amp; mobil uygulama</td><td>Flutter (tek kod tabanı: kiosk, iOS, Android); kiosk modunda Android veya Windows</td><td class="muted">Hızlı geliştirme, tutarlı arayüz</td></tr>
+        <tr><td>Backend</td><td>NestJS (Node.js) veya Go; modüler monolit ile başla, ölçeklenince servislere ayır</td><td class="muted">MVP hızı, sonradan esneklik</td></tr>
+        <tr><td>Veri</td><td>PostgreSQL, Redis, şifreli nesne deposu, olay akışı (NATS / Kafka)</td><td class="muted">Kanıtlanmış, açık kaynak</td></tr>
+        <tr><td>IoT iletişimi</td><td>MQTT over TLS; otel içi edge gateway (Linux + Docker)</td><td class="muted">Çevrimdışı önbellek, düşük gecikme</td></tr>
+        <tr><td>Yüz tanıma</td><td>Ticari SDK (NIST FRTE'de üst sıralarda, iBeta PAD Seviye 2) ile başla</td><td class="muted">Kendi modeline sonra geçiş opsiyonu</td></tr>
+        <tr><td>Uç donanım</td><td>Kapı: düşük güçlü NPU'lu SoC (ör. Rockchip RV1126 sınıfı) · Kiosk: x86 + GPU veya NVIDIA Jetson Orin</td><td class="muted">Kapıda &lt; 1 sn doğrulama</td></tr>
+        <tr><td>Wi‑Fi / hotspot</td><td>FreeRADIUS, kendi captive portal'ımız, bulut yönetimli AP'ler; mevcut sistemlere RADIUS/API</td><td class="muted">5651 log + zaman damgası modülü</td></tr>
+        <tr><td>Bulut</td><td>Türkiye lokasyonlu bulut, iki bölge yedekli; Kubernetes</td><td class="muted">KVKK yurt dışı aktarım kısıtları</td></tr>
+        <tr><td>Güvenlik</td><td>KMS/HSM, Vault, mTLS, WAF, SIEM, imzalı firmware + OTA güncelleme</td><td class="muted">ISO/IEC 27001 hedefi</td></tr>
+        <tr><td>AI asistan</td><td>LLM tabanlı çok dilli sesli/yazılı asistan + otel bilgi tabanı (RAG), insana devir akışı</td><td class="muted">20+ dil, 7/24</td></tr>
+        <tr><td>DevOps</td><td>CI/CD, altyapı‑kod (Terraform), uzaktan cihaz filosu yönetimi, merkezi izleme</td><td class="muted">Yüzlerce cihazı tek yerden yönet</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 18 · HAZIR AL / GELİŞTİR -->
+<section class="slide">
+  <div class="kicker"><span class="sec">05</span>Hazır al mı, geliştir mi?</div>
+  <h2>Donanımı al, deneyimi ve yazılımı kendin yap</h2>
+  <div class="bd" style="display:flex;flex-direction:column;gap:14px">
+    <table class="tbl">
+      <thead><tr><th style="width:230px">Bileşen</th><th>Seçenekler</th><th style="width:200px">Karar</th></tr></thead>
+      <tbody>
+        <tr><td>Kiosk kasası &amp; donanım</td><td>OEM kiosk üreticileri (yerli üreticiler dahil); kendi tasarımımızla kaplama</td><td><span class="pill gray">AL</span></td></tr>
+        <tr><td>Kapı kilidi (mekanik + RFID)</td><td>API sunan otel kilidi üreticileri (ör. ASSA ABLOY Vingcard, dormakaba, SALTO); sertifikalı mekanik</td><td><span class="pill gray">AL</span></td></tr>
+        <tr><td>Kapı yüz kamera modülü</td><td>Başta hazır yüz tanıma terminali + API; ölçek büyüyünce kendi modülümüz</td><td><span class="pill amber">AL → sonra GELİŞTİR</span></td></tr>
+        <tr><td>Yüz tanıma &amp; canlılık motoru</td><td>Ticari SDK lisansı veya kendi modelimiz</td><td><span class="pill amber">AL → sonra değerlendir</span></td></tr>
+        <tr><td>Wi‑Fi donanımı (AP)</td><td>Kurumsal AP'ler; yönetim, portal ve log yazılımı bizde</td><td><span class="pill amber">Donanım AL · yazılım GELİŞTİR</span></td></tr>
+        <tr><td>Otel programı (PMS)</td><td>Mevcut PMS'lere entegrasyon; küçük tesisler için PMS Lite</td><td><span class="pill amber">ENTEGRE OL → Lite GELİŞTİR</span></td></tr>
+        <tr><td>Platform yazılımı</td><td>Kiosk akışı, kapı yetkilendirme, misafir uygulaması, panel, entegrasyonlar</td><td><span class="pill">GELİŞTİR</span></td></tr>
+      </tbody>
+    </table>
+    <div class="band" style="margin-top:auto"><svg class="ic" style="color:#5FD3CA"><use href="#i-spark"/></svg><div><b>Asıl değer yazılım ve deneyim katmanında.</b> Birden çok kilit, SDK ve PMS markasını destekleyen soyutlama katmanı, tedarikçi bağımlılığını önler ve ürünü satılabilir yapar.</div></div>
+  </div>
+</section>
+
+<!-- 19 · YENİLİKLER 1 -->
+<section class="slide">
+  <div class="kicker"><span class="sec">06</span>Yenilikçi özellikler · Misafir deneyimi</div>
+  <h2>Sadece giriş değil: deneyimi baştan tasarla</h2>
+  <div class="bd">
+    <div class="g3 pcards" style="height:100%;grid-template-rows:repeat(3,1fr)">
+      <div class="card"><div class="row"><div class="ibox sm"><svg class="ic"><use href="#i-spark"/></svg></div><div><h3>AI sanal resepsiyonist</h3><p>20+ dilde sesli/yazılı: “Havuz kaçta kapanıyor?”, “Taksi çağır”. Çözemezse insana devreder.</p></div></div><div class="cf"><span class="pill">Faz 3</span><span class="pill ">Maliyet ↓</span></div></div>
+      <div class="card"><div class="row"><div class="ibox sm"><svg class="ic"><use href="#i-headset"/></svg></div><div><h3>Görüntülü uzaktan resepsiyon</h3><p>Merkezi tek görevli, aynı anda birden çok oteli kiosk ekranından görüntülü karşılar.</p></div></div><div class="cf"><span class="pill">Faz 1</span><span class="pill ">Maliyet ↓</span></div></div>
+      <div class="card"><div class="row"><div class="ibox sm"><svg class="ic"><use href="#i-map"/></svg></div><div><h3>Odanı kendin seç</h3><p>Kat planı üzerinde manzara, kat, asansöre yakınlık; tercihli odalar ek ücretli.</p></div></div><div class="cf"><span class="pill">Faz 3</span><span class="pill amber">Gelir ↑</span></div></div>
+      <div class="card"><div class="row"><div class="ibox sm amber"><svg class="ic"><use href="#i-coin"/></svg></div><div><h3>Akıllı ekstra satış</h3><p>Oda yükseltme, geç çıkış, kahvaltı, otopark, premium Wi‑Fi; doluluğa göre dinamik fiyat.</p></div></div><div class="cf"><span class="pill">Faz 2</span><span class="pill amber">Gelir ↑</span></div></div>
+      <div class="card"><div class="row"><div class="ibox sm amber"><svg class="ic"><use href="#i-bed"/></svg></div><div><h3>Hoş geldin senaryosu</h3><p>Kapı açılınca ışıklar yanar, klima tercih edilen derecede, TV'de isimle karşılama.</p></div></div><div class="cf"><span class="pill">Faz 3</span><span class="pill gray">Deneyim</span></div></div>
+      <div class="card"><div class="row"><div class="ibox sm amber"><svg class="ic"><use href="#i-qr"/></svg></div><div><h3>Ziyaretçi QR'ı</h3><p>Misafir, ziyaretçisi için tek seferlik ve süreli lobi geçiş kodu oluşturur.</p></div></div><div class="cf"><span class="pill">Faz 3</span><span class="pill gray">Güvenlik</span></div></div>
+      <div class="card"><div class="row"><div class="ibox sm"><svg class="ic"><use href="#i-star"/></svg></div><div><h3>Tekrar gelen misafir</h3><p>Ayrı ve süreli rızayla 10 saniyede yüzle check‑in; oda ve yastık tercihleri hatırlanır.</p></div></div><div class="cf"><span class="pill">Faz 4</span><span class="pill gray">Deneyim</span></div></div>
+      <div class="card"><div class="row"><div class="ibox sm"><svg class="ic"><use href="#i-locker"/></svg></div><div><h3>Akıllı bagaj dolapları</h3><p>Erken varış ve geç çıkışta bagaj bırakma; oda hazır olunca anlık bildirim.</p></div></div><div class="cf"><span class="pill">Faz 3</span><span class="pill gray">Deneyim</span></div></div>
+      <div class="card"><div class="row"><div class="ibox sm"><svg class="ic"><use href="#i-globe"/></svg></div><div><h3>Dijital concierge</h3><p>Şehir rehberi, restoran rezervasyonu, transfer, etkinlik bileti (komisyon geliri).</p></div></div><div class="cf"><span class="pill">Faz 3</span><span class="pill amber">Gelir ↑</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 20 · YENİLİKLER 2 -->
+<section class="slide">
+  <div class="kicker"><span class="sec">06</span>Yenilikçi özellikler · Operasyon &amp; bina</div>
+  <h2>Oteli kendi kendine işleyen bir sisteme dönüştür</h2>
+  <div class="bd">
+    <div class="g3 pcards" style="height:100%;grid-template-rows:repeat(3,1fr)">
+      <div class="card"><div class="row"><div class="ibox sm"><svg class="ic"><use href="#i-bed"/></svg></div><div><h3>Otomatik housekeeping</h3><p>Check‑out anında temizlik görevi; tabletten öncelikli liste; “hazır” olunca bekleyen misafire bildirim.</p></div></div><div class="cf"><span class="pill">Faz 1–2</span><span class="pill gray">Verimlilik</span></div></div>
+      <div class="card"><div class="row"><div class="ibox sm"><svg class="ic"><use href="#i-leaf"/></svg></div><div><h3>Akıllı enerji yönetimi</h3><p>Oda boşken klima ve ışık eko moda; check‑out'ta enerji kesilir. Ciddi enerji tasarrufu potansiyeli.</p></div></div><div class="cf"><span class="pill">Faz 3</span><span class="pill ">Maliyet ↓</span></div></div>
+      <div class="card"><div class="row"><div class="ibox sm"><svg class="ic"><use href="#i-car"/></svg></div><div><h3>Plaka tanıma (ANPR)</h3><p>Otopark bariyeri rezervasyonla eşleşir; araçla gelen misafir bekletilmez.</p></div></div><div class="cf"><span class="pill">Faz 3</span><span class="pill gray">Deneyim</span></div></div>
+      <div class="card"><div class="row"><div class="ibox sm amber"><svg class="ic"><use href="#i-elev"/></svg></div><div><h3>Asansör &amp; ortak alanlar</h3><p>Aynı kimlikle yalnızca kendi katına çıkış; spor salonu, spa, toplantı odası erişimi.</p></div></div><div class="cf"><span class="pill">Faz 3</span><span class="pill gray">Güvenlik</span></div></div>
+      <div class="card"><div class="row"><div class="ibox sm amber"><svg class="ic"><use href="#i-gear"/></svg></div><div><h3>Kestirimci bakım</h3><p>Kilit pili, kiosk kart stoğu, yazıcı, AP ve ağ sağlığı için arıza olmadan uyarı.</p></div></div><div class="cf"><span class="pill">Faz 3</span><span class="pill gray">Verimlilik</span></div></div>
+      <div class="card"><div class="row"><div class="ibox sm amber"><svg class="ic"><use href="#i-cart"/></svg></div><div><h3>Self‑servis lobi market</h3><p>Akıllı raflı mini market; ödeme kiosk'tan veya odaya yansıtılarak, 7/24.</p></div></div><div class="cf"><span class="pill">Faz 4</span><span class="pill amber">Gelir ↑</span></div></div>
+      <div class="card"><div class="row"><div class="ibox sm"><svg class="ic"><use href="#i-alert"/></svg></div><div><h3>Acil durum yönetimi</h3><p>Yangında ekranlarda kaçış yönleri, kapıların yönetmeliğe uygun davranışı, kiosk'ta SOS.</p></div></div><div class="cf"><span class="pill">Faz 2</span><span class="pill gray">Güvenlik</span></div></div>
+      <div class="card"><div class="row"><div class="ibox sm"><svg class="ic"><use href="#i-building"/></svg></div><div><h3>Canlı operasyon haritası</h3><p>Kat planında her odanın durumu: dolu, boş, temizlikte, arızalı, kapı açık kaldı.</p></div></div><div class="cf"><span class="pill">Faz 2</span><span class="pill gray">Verimlilik</span></div></div>
+      <div class="card"><div class="row"><div class="ibox sm"><svg class="ic"><use href="#i-smile"/></svg></div><div><h3>Anlık memnuniyet</h3><p>Check‑out'ta tek dokunuşluk puanlama; olumsuz geri bildirim anında yöneticiye düşer.</p></div></div><div class="cf"><span class="pill">Faz 2</span><span class="pill gray">Deneyim</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 21 · OPERASYON MODELİ -->
+<section class="slide">
+  <div class="kicker"><span class="sec">07</span>Operasyon &amp; personel modeli</div>
+  <h2>“Resepsiyonsuz” ama insansız değil</h2>
+  <p class="lead">Misafir sorunu en hızlı çözülebilecek katmanda çözülür; insan her zaman bir dokunuş uzaklıktadır.</p>
+  <div class="bd" style="display:flex;flex-direction:column;gap:18px;margin-top:20px">
+    <div class="flow">
+      <div class="fs"><span class="k">0 sn</span><div class="ibox sm"><svg class="ic"><use href="#i-kiosk"/></svg></div><h4>Self‑servis</h4><p>Kiosk ve uygulama; işlemlerin büyük çoğunluğu burada biter</p></div>
+      <div class="ar"><svg class="ic"><use href="#i-arrow"/></svg></div>
+      <div class="fs"><span class="k">anında</span><div class="ibox sm"><svg class="ic"><use href="#i-spark"/></svg></div><h4>AI asistan</h4><p>Sık sorular, talepler, yönlendirme; 20+ dilde</p></div>
+      <div class="ar"><svg class="ic"><use href="#i-arrow"/></svg></div>
+      <div class="fs"><span class="k">&lt; 1 dk</span><div class="ibox sm amber"><svg class="ic"><use href="#i-headset"/></svg></div><h4>Uzaktan resepsiyonist</h4><p>Görüntülü görüşme, manuel kimlik onayı, istisnalar</p></div>
+      <div class="ar"><svg class="ic"><use href="#i-arrow"/></svg></div>
+      <div class="fs"><span class="k">5–10 dk</span><div class="ibox sm amber"><svg class="ic"><use href="#i-users"/></svg></div><h4>Saha görevlisi</h4><p>Fiziksel müdahale, güvenlik, teknik ilk yardım</p></div>
+    </div>
+    <div class="g2 pcards" style="flex:1;min-height:0">
+      <div class="card" style="padding:16px 20px"><div class="row" style="align-items:center;justify-content:space-between"><h3>Klasik model</h3><span class="pill gray">40 odalı örnek</span></div>
+        <ul class="ticks amb" style="margin-top:8px"><li>7/24 ön büro: vardiyalı 4–5 resepsiyonist</li><li>Gece güvenliği / gece müdürü</li><li>Kart basma, kimlik bildirimi, fatura elle</li><li>Wi‑Fi şifresi, oda bilgisi sözlü/kâğıtla</li></ul><div class="ans" style="color:var(--muted)"><span>Yıllık ön büro maliyeti (örnek)</span><b class="tnum" style="margin-left:auto;color:var(--text);font-size:18px">≈ 60.000 USD</b></div></div>
+      <div class="card" style="padding:16px 20px;border:1.5px solid var(--accent)"><div class="row" style="align-items:center;justify-content:space-between"><h3 class="accent">LOBİ modeli</h3><span class="pill">≈ 1,5 kişi eşdeğeri</span></div>
+        <ul class="ticks" style="margin-top:8px"><li>Paylaşımlı uzaktan resepsiyon merkezi (çok tesis, tek ekip)</li><li>Vardiya başına 1 çok yönlü saha görevlisi (misafir ilişkileri + güvenlik + teknik)</li><li>Housekeeping tablet ile görev alır</li><li>Tesis yöneticisi her şeyi panelden izler</li></ul><div class="ans"><span>Yıllık ön büro maliyeti (örnek)</span><b class="tnum" style="margin-left:auto;font-size:18px">≈ 28.000 USD</b></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 22 · İSTİSNA SENARYOLARI -->
+<section class="slide">
+  <div class="kicker"><span class="sec">07</span>İstisna senaryoları</div>
+  <h2>“Ya şöyle olursa?” sorularının cevabı hazır</h2>
+  <div class="bd" style="display:grid;grid-template-columns:1fr 1fr;gap:26px">
+    <table class="tbl">
+      <thead><tr><th style="width:44%">Durum</th><th>Çözüm</th></tr></thead>
+      <tbody>
+        <tr><td>Kimlik okunamıyor / yıpranmış</td><td>Belge görüntüsü + uzaktan görevlinin görüntülü onayı</td></tr>
+        <tr><td>Yüz eşleşmiyor (yaş farkı, sakal, makyaj)</td><td>İkinci deneme → görevli doğrulaması → alternatif anahtar</td></tr>
+        <tr><td>Biyometri istemeyen misafir</td><td>Mobil anahtar, PIN veya kart: eksiksiz hizmet</td></tr>
+        <tr><td>Çocuklu aile</td><td>Çocuk ebeveyn kaydına bağlanır, 18 yaş altına biyometri uygulanmaz; KBS bildirimi yapılır</td></tr>
+        <tr><td>Grup / tur girişi</td><td>Grup lideri toplu ön check‑in; kiosk'ta toplu anahtar</td></tr>
+        <tr><td>Oda henüz hazır değil</td><td>Bagaj dolabı + “oda hazır” bildirimi; ücretli erken giriş teklifi</td></tr>
+      </tbody>
+    </table>
+    <table class="tbl">
+      <thead><tr><th style="width:44%">Durum</th><th>Çözüm</th></tr></thead>
+      <tbody>
+        <tr><td>Elektrik kesintisi</td><td>Kiosk UPS'li; kilitler pille çalışır, yetkiler cihazda kayıtlı</td></tr>
+        <tr><td>İnternet kesintisi</td><td>Edge gateway yerel modda; 4G/5G yedek hat</td></tr>
+        <tr><td>Telefon kayıp / şarjı bitti</td><td>Kiosk'ta yüz veya kimlikle yeni anahtar; PIN yedeği</td></tr>
+        <tr><td>Ödeme reddedildi</td><td>Alternatif ödeme; tekrarında görevliye devir</td></tr>
+        <tr><td>Yetkisiz giriş denemesi</td><td>Tekrarlayan başarısız denemede kapı kilitlenir, görevliye alarm</td></tr>
+        <tr><td>Sağlık / acil durum</td><td>Kiosk ve uygulamada SOS; görevli + 112 yönlendirmesi</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 23 · YOL HARİTASI -->
+<section class="slide">
+  <div class="kicker"><span class="sec">08</span>Yol haritası</div>
+  <h2>18 ayda pilotlan ürüne</h2>
+  <div class="bd">
+    <div class="gantt">
+      <div class="months"><div></div><div class="scale">
+        <span style="left:0%">Ay 0</span><span style="left:16.67%">3</span><span style="left:33.33%">6</span><span style="left:50%">9</span><span style="left:66.67%">12</span><span style="left:83.33%">15</span><span style="left:100%">18</span>
+      </div></div>
+      <div class="gr"><div class="lbl"><b>Faz 0 · Keşif &amp; tasarım</b><small>Ay 0–2</small></div><div class="track">
+        <div class="bar g" style="left:0;width:11.1%">Keşif</div>
+        <div class="del" style="left:0;width:96%">Hukuki görüş (KVKK, turizm belgesi, KBS) · pilot tesis seçimi · tedarikçi görüşmeleri · UX prototipi ve kullanıcı testleri</div></div></div>
+      <div class="gr"><div class="lbl"><b>Faz 1 · MVP</b><small>Ay 2–6 · pilot 10–20 oda</small></div><div class="track">
+        <div class="bar" style="left:11.1%;width:22.2%">MVP + pilot</div>
+        <div class="del" style="left:11.1%;width:88%">Kiosk check‑in/out · kimlik okuma · KBS · ödeme · mobil anahtar + kart · PMS ve Wi‑Fi (RADIUS) entegrasyonu · panel v1</div></div></div>
+      <div class="gr"><div class="lbl"><b>Faz 2 · Yüz &amp; mobil</b><small>Ay 6–9</small></div><div class="track">
+        <div class="bar a" style="left:33.3%;width:16.7%">Yüz + uygulama</div>
+        <div class="del" style="left:33.3%;width:66%">Kapıda yüz doğrulama · online ön check‑in · misafir uygulaması · ekstra satışlar · çok dil</div></div></div>
+      <div class="gr"><div class="lbl"><b>Faz 3 · Akıllı otel</b><small>Ay 9–15</small></div><div class="track">
+        <div class="bar a" style="left:50%;width:33.3%">IoT + AI + LOBİ Wi‑Fi</div>
+        <div class="del" style="left:30%;width:70%;text-align:right">Oda otomasyonu · AI asistan · housekeeping · enerji yönetimi · LOBİ Wi‑Fi (5651 log) · analitik</div></div></div>
+      <div class="gr"><div class="lbl"><b>Faz 4 · Ölçek</b><small>Ay 15+</small></div><div class="track">
+        <div class="bar k" style="left:83.3%;width:16.7%">SaaS →</div>
+        <div class="del" style="left:20%;width:80%;text-align:right">Çok tesisli SaaS · PMS Lite · uzaktan resepsiyon merkezi · ISO 27001 · yeni oteller</div></div></div>
+      <div class="vline" style="left:calc(230px + (100% - 230px) * .3333)"></div>
+    </div>
+    <div class="note" style="margin-top:6px">Kesikli çizgi: pilot tesiste canlı kullanım başlangıcı (Ay 6). Süreler 8–10 kişilik çekirdek ekip varsayımıyla tahminidir.</div>
+  </div>
+</section>
+
+<!-- 24 · MVP KAPSAMI -->
+<section class="slide">
+  <div class="kicker"><span class="sec">08</span>MVP kapsamı</div>
+  <h2>İlk sürümde ne var, ne yok?</h2>
+  <div class="bd">
+    <div class="msc">
+      <div class="col" style="border-top:4px solid var(--accent)"><div class="hdr" style="color:var(--accent-d)"><h4>Olmazsa olmaz</h4><span class="pill">Must</span></div>
+        <ul><li>Kiosk'ta rezervasyon bulma</li><li>Kimlik çip / MRZ okuma</li><li>Canlılık + 1:1 yüz eşleştirme</li><li>KBS bildirimi</li><li>Ödeme ve provizyon</li><li>Mobil anahtar + RFID kart</li><li>1 PMS entegrasyonu</li><li>KVKK rıza akışı</li><li>Görüntülü destek</li><li>Check‑out + e‑Arşiv fatura</li><li>Yönetim paneli v1</li></ul></div>
+      <div class="col" style="border-top:4px solid var(--amber)"><div class="hdr" style="color:var(--amber-d)"><h4>Olmalı</h4><span class="pill amber">Should</span></div>
+        <ul><li>Kapıda yüz doğrulama (pilot odalarda)</li><li>Wi‑Fi hotspot entegrasyonu (RADIUS) ve kiosk'ta Wi‑Fi QR'ı</li><li>Online ön check‑in</li><li>5 dil: TR, EN, DE, RU, AR</li><li>Temel ekstra satışlar</li><li>Housekeeping görev listesi</li></ul></div>
+      <div class="col" style="border-top:4px solid #7D8CA1"><div class="hdr" style="color:var(--muted)"><h4>Olabilir</h4><span class="pill gray">Could</span></div>
+        <ul><li>AI asistan</li><li>Odanı seç (kat planı)</li><li>Bagaj dolabı</li><li>Plaka tanıma</li><li>LOBİ Wi‑Fi (kendi hotspot)</li><li>Hoş geldin oda senaryosu</li></ul></div>
+      <div class="col" style="border-top:4px solid var(--ink)"><div class="hdr" style="color:var(--ink)"><h4>Şimdilik yok</h4><span class="pill gray">Won't</span></div>
+        <ul><li>Kendi kilit donanımını üretmek</li><li>PMS Lite (Faz 4)</li><li>Tekrar gelen misafir için uzun süreli biyometri saklama</li><li>Çok tesisli faturalama</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- 25 · EKİP & BÜTÇE -->
+<section class="slide">
+  <div class="kicker"><span class="sec">08</span>Ekip &amp; bütçe</div>
+  <h2>Çekirdek ekip ve 40 odalı tesis için kaba maliyet</h2>
+  <div class="bd" style="display:grid;grid-template-columns:350px 1fr;gap:24px">
+    <div class="card" style="padding:16px 18px">
+      <div class="row" style="align-items:center"><div class="ibox sm"><svg class="ic"><use href="#i-users"/></svg></div><h3>MVP ekibi (~6 ay)</h3></div>
+      <table class="tbl" style="margin-top:8px;font-size:12.6px">
+        <tbody>
+          <tr><td>Ürün yöneticisi</td><td class="tnum" style="text-align:right">1</td></tr>
+          <tr><td>UX/UI tasarımcı</td><td class="tnum" style="text-align:right">1</td></tr>
+          <tr><td>Backend geliştirici</td><td class="tnum" style="text-align:right">2–3</td></tr>
+          <tr><td>Flutter (kiosk + mobil)</td><td class="tnum" style="text-align:right">2</td></tr>
+          <tr><td>Gömülü / IoT / ağ</td><td class="tnum" style="text-align:right">1–2</td></tr>
+          <tr><td>Biyometri / ML mühendisi</td><td class="tnum" style="text-align:right">1</td></tr>
+          <tr><td>DevOps &amp; güvenlik</td><td class="tnum" style="text-align:right">1</td></tr>
+          <tr><td>Test (QA)</td><td class="tnum" style="text-align:right">1</td></tr>
+          <tr><td>Saha kurulum teknisyeni</td><td class="tnum" style="text-align:right">½</td></tr>
+        </tbody>
+      </table>
+      <div class="note" style="margin-top:8px">Danışmanlar: KVKK avukatı, otel operasyon uzmanı</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <table class="tbl tnum">
+        <thead><tr><th>Kalem (40 oda, USD)</th><th style="text-align:right">Birim</th><th style="text-align:right">Adet</th><th style="text-align:right">Toplam</th></tr></thead>
+        <tbody>
+          <tr><td>Kiosk (donanım + kasa + yazılım kurulumu)</td><td style="text-align:right">6.000–12.000</td><td style="text-align:right">2</td><td style="text-align:right">12.000–24.000</td></tr>
+          <tr><td>Akıllı kapı ünitesi (kilit + yüz kamerası)</td><td style="text-align:right">400–1.200</td><td style="text-align:right">40</td><td style="text-align:right">16.000–48.000</td></tr>
+          <tr><td>Ağ, edge gateway, kablolama, kurulum</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">8.000–15.000</td></tr>
+          <tr style="background:var(--accent-l)"><td>Tek seferlik yatırım (zorunlu)</td><td></td><td></td><td style="text-align:right;font-weight:700">36.000–87.000</td></tr>
+          <tr><td>LOBİ Wi‑Fi (opsiyonel: AP + kontrolcü)</td><td style="text-align:right">150–400 / AP</td><td style="text-align:right">12–20</td><td style="text-align:right">+2.000–8.000</td></tr>
+          <tr><td>Yıllık: yazılım lisansları (yüz SDK vb.)</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">3.000–10.000</td></tr>
+          <tr><td>Yıllık: bulut, SMS, bakım</td><td style="text-align:right">—</td><td style="text-align:right">—</td><td style="text-align:right">4.000–8.000</td></tr>
+        </tbody>
+      </table>
+      <div class="note" style="margin-top:auto">Rakamlar kaba aralıklardır; tedarikçi teklifleriyle netleştirilmelidir. Platform geliştirme maliyeti (ekip × 6 ay) ayrıca hesaplanmalıdır; SaaS modelinde bu maliyet birden çok tesise yayılır.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 26 · İŞ MODELİ -->
+<section class="slide">
+  <div class="kicker"><span class="sec">09</span>İş modeli</div>
+  <h2>Önce kendi tesisimizde kanıtla, sonra platform olarak sat</h2>
+  <div class="bd" style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="card" style="padding:14px 18px"><div class="row" style="align-items:center"><div class="ibox sm"><svg class="ic"><use href="#i-building"/></svg></div><h3>A · Kendi tesisimiz</h3></div><p>Personel maliyetinde düşüş, ekstra satışlarla gelir artışı, gece girişleriyle kaçırılan rezervasyonların kazanılması. Ürün için canlı vitrin ve referans.</p></div>
+      <div class="card" style="padding:14px 18px;flex:1;display:flex;flex-direction:column"><div class="row" style="align-items:center"><div class="ibox sm amber"><svg class="ic"><use href="#i-cloud"/></svg></div><h3>B · SaaS platformu (gelir kalemleri)</h3></div>
+        <ul class="ticks amb" style="margin-top:6px">
+          <li><b>Kurulum:</b> donanım satışı veya aylık kiralama (Hardware‑as‑a‑Service)</li>
+          <li><b>Abonelik:</b> oda başına aylık ücret (ör. 4–10 USD/oda/ay, ölçeğe göre)</li>
+          <li><b>Modüller:</b> LOBİ Wi‑Fi, PMS Lite, AI asistan, enerji yönetimi</li>
+          <li><b>İşlem geliri:</b> ekstra satış ve concierge komisyonu</li>
+          <li><b>Hizmet:</b> uzaktan resepsiyon merkezi, tesis başına aylık</li>
+          <li><b>Beyaz etiket:</b> zincir oteller için kendi markalarıyla</li>
+        </ul><div class="ans" style="flex-direction:column;align-items:flex-start;gap:3px;color:var(--text);font-weight:500"><span style="font-size:13.5px">Örnek: 40 oda × 7 USD × 12 ay = <b>3.360 USD/yıl</b> abonelik / tesis</span><span style="font-size:13.5px">100 tesiste ≈ <b>336.000 USD/yıl</b> tekrarlayan gelir (modüller ve donanım hariç)</span></div></div>
+    </div>
+    <div class="card" style="padding:16px 18px">
+      <div class="row" style="align-items:center"><div class="ibox sm"><svg class="ic"><use href="#i-users"/></svg></div><h3>Hedef segmentler</h3></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px">
+        <div style="background:var(--accent-l);border-radius:10px;padding:12px"><b style="font-size:13.5px">Butik oteller</b><p class="small muted" style="margin-top:3px">10–60 oda, küçük kadro</p></div>
+        <div style="background:var(--accent-l);border-radius:10px;padding:12px"><b style="font-size:13.5px">Apart &amp; rezidanslar</b><p class="small muted" style="margin-top:3px">Uzun konaklama, az personel</p></div>
+        <div style="background:var(--accent-l);border-radius:10px;padding:12px"><b style="font-size:13.5px">Şehir otelleri</b><p class="small muted" style="margin-top:3px">Ekonomi ve orta segment</p></div>
+        <div style="background:var(--accent-l);border-radius:10px;padding:12px"><b style="font-size:13.5px">Hosteller</b><p class="small muted" style="margin-top:3px">Genç, teknolojiye yatkın misafir</p></div>
+        <div style="background:var(--amber-l);border-radius:10px;padding:12px"><b style="font-size:13.5px">Kısa dönem kiralama</b><p class="small muted" style="margin-top:3px">Çok daireli işletmeciler</p></div>
+        <div style="background:var(--amber-l);border-radius:10px;padding:12px"><b style="font-size:13.5px">Havalimanı / hastane yakını</b><p class="small muted" style="margin-top:3px">Gece geç giriş yoğun</p></div>
+        <div style="background:var(--amber-l);border-radius:10px;padding:12px"><b style="font-size:13.5px">Öğrenci yurtları</b><p class="small muted" style="margin-top:3px">Toplu giriş, erişim kontrolü</p></div>
+        <div style="background:var(--amber-l);border-radius:10px;padding:12px"><b style="font-size:13.5px">Kurumsal misafirhaneler</b><p class="small muted" style="margin-top:3px">Personelsiz işletme</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 27 · ÖRNEK GETİRİ -->
+<section class="slide">
+  <div class="kicker"><span class="sec">09</span>Örnek getiri hesabı</div>
+  <h2>40 odalı tesiste yatırım ≈ 1–2 yılda kendini öder</h2>
+  <div class="bd" style="display:grid;grid-template-columns:320px 1fr 260px;gap:22px">
+    <div class="card" style="padding:16px 18px">
+      <h3>Varsayımlar</h3>
+      <table class="tbl tnum" style="margin-top:8px;font-size:12.4px">
+        <tbody>
+          <tr><td>Oda / doluluk</td><td style="text-align:right">40 / %70</td></tr>
+          <tr><td>Klasik ön büro</td><td style="text-align:right">5 kişi</td></tr>
+          <tr><td>LOBİ modeli</td><td style="text-align:right">1,5 kişi eşd.</td></tr>
+          <tr><td>Kişi başı işveren maliyeti</td><td style="text-align:right">1.000 USD/ay</td></tr>
+          <tr><td>Ort. konaklama</td><td style="text-align:right">2 gece</td></tr>
+          <tr><td>Ekstra satış</td><td style="text-align:right">%10 × 15 USD</td></tr>
+          <tr><td>Yıllık yazılım + bulut</td><td style="text-align:right">10.000 USD</td></tr>
+        </tbody>
+      </table>
+      <div class="note" style="margin-top:8px">Tüm varsayımlar örnektir; kendi tesis verilerinizle güncellenmelidir.</div>
+    </div>
+    <div class="card" style="padding:18px 22px;display:flex;flex-direction:column">
+      <h3>Yıllık ön büro maliyeti (USD)</h3>
+      <div style="margin-top:26px;display:flex;flex-direction:column;gap:30px">
+        <div>
+          <div style="display:flex;justify-content:space-between;font-size:15px;font-weight:650"><span>Klasik model</span><span class="tnum">60.000</span></div>
+          <div style="height:46px;margin-top:8px;background:#EEEBE4;border-radius:4px"><div style="width:100%;height:100%;background:#A9B3C1;border-radius:4px"></div></div>
+          <div class="note" style="margin-top:4px">5 kişi × 1.000 × 12 ay</div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;font-size:15px;font-weight:650"><span>LOBİ modeli</span><span class="tnum">28.000</span></div>
+          <div style="height:46px;margin-top:8px;background:#EEEBE4;border-radius:4px;display:flex;gap:2px"><div style="width:30%;height:100%;background:var(--accent);border-radius:4px 0 0 4px"></div><div style="width:16.67%;height:100%;background:#7FCFC9;border-radius:0 4px 4px 0"></div></div>
+          <div class="note" style="margin-top:4px">Personel 18.000 (koyu) + yazılım ve bulut 10.000 (açık)</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;background:var(--accent-l);border-radius:10px;padding:12px 16px"><span class="big-num accent" style="font-size:30px">−%53</span><span style="font-size:14.5px;line-height:1.35">Yıllık <b>32.000 USD</b> ön büro tasarrufu</span></div>
+      </div>
+      <div style="margin-top:auto;border-top:1px solid var(--line);padding-top:12px;display:flex;justify-content:space-between;font-size:14.5px"><span class="muted">Ekstra satış geliri (≈ 5.100 konaklama × %10 × 15 USD)</span><b class="tnum">+ 7.700</b></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="kpi" style="background:var(--ink);border-color:var(--ink)"><div class="v" style="color:#5FD3CA">≈ 39.700</div><div class="l" style="color:var(--d-text)">USD / yıl net fayda</div><div class="d" style="color:var(--d-muted)">32.000 tasarruf + 7.700 ek gelir</div></div>
+      <div class="kpi"><div class="v">36–87 <small>bin USD</small></div><div class="l">Tek seferlik yatırım</div><div class="d">Kiosk, kapılar, ağ ve kurulum</div></div>
+      <div class="kpi" style="border:1.5px solid var(--accent)"><div class="v accent">≈ 11–26 <small>ay</small></div><div class="l">Geri dönüş süresi</div><div class="d">Enerji tasarrufu ve gece rezervasyonları hariç</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 28 · PAZAR & KONUMLANDIRMA -->
+<section class="slide">
+  <div class="kicker"><span class="sec">09</span>Pazar &amp; konumlandırma</div>
+  <h2>Parçalı çözümler yerine yerel mevzuata hazır, uçtan uca platform</h2>
+  <div class="bd" style="display:grid;grid-template-columns:520px 1fr;gap:30px">
+    <div>
+      <div class="matrix">
+        <div class="plane"></div>
+        <div class="q">Hedef bölge</div>
+        <div class="pt" style="left:22%;bottom:26%"><i></i><span>Akıllı kilit üreticileri</span></div>
+        <div class="pt" style="left:58%;bottom:20%"><i></i><span>Global kiosk / self check‑in yazılımları</span></div>
+        <div class="pt" style="left:28%;bottom:66%"><i></i><span>Yerli PMS eklentileri</span></div>
+        <div class="pt" style="left:76%;bottom:44%"><i></i><span>Büyük zincirlerin kendi uygulamaları</span></div>
+        <div class="pt me" style="left:82%;bottom:80%"><i></i><span>LOBİ</span></div>
+        <div class="ax" style="left:0;bottom:-26px">Parçalı</div>
+        <div class="ax" style="right:0;bottom:-26px">Uçtan uca</div>
+        <div class="ax" style="left:-34px;bottom:0;transform:rotate(-90deg);transform-origin:left bottom;white-space:nowrap">Genel</div>
+        <div class="ax" style="left:-34px;top:100px;transform:rotate(-90deg);transform-origin:left top;white-space:nowrap">Türkiye'ye hazır</div>
+      </div>
+      <div class="note" style="margin-top:34px;margin-left:34px">Yatay: çözüm kapsamı · Dikey: yerel mevzuat uyumu (KBS, e‑Fatura, KVKK, 5651). Niteliksel değerlendirmedir.</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="card" style="padding:14px 18px"><h3>Dünyada durum</h3><p>citizenM ve YOTEL gibi markalar self check‑in kiosklarını yaygın kullanıyor; büyük zincirler mobil anahtar sunuyor; Asya'da yüz doğrulamalı check‑in yaygınlaşıyor.</p></div>
+      <div class="card" style="padding:14px 18px"><h3>Mevcut boşluk</h3><p>Kiosk yazılımı, kilit, Wi‑Fi ve PMS ayrı firmalardan geliyor; entegrasyon yükü otelde kalıyor. Küçük tesisler için erişilebilir, yerel mevzuata hazır paket yok.</p></div>
+      <div class="card" style="padding:14px 18px;border:1.5px solid var(--accent)"><h3 class="accent">LOBİ'nin farkı</h3>
+        <ul class="ticks" style="margin-top:4px"><li>Kiosk + kapı + uygulama + Wi‑Fi + panel tek platformda</li><li>KBS, e‑Fatura, KVKK ve 5651 uyumu hazır</li><li>Gizlilik öncelikli yüz doğrulama (uçta, 1:az, otomatik silme)</li><li>Uzaktan resepsiyon hizmeti dahil; küçük tesise uygun fiyat</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- 29 · KPI -->
+<section class="slide">
+  <div class="kicker"><span class="sec">10</span>Başarı ölçütleri</div>
+  <h2>Pilotta neyi ölçeceğiz?</h2>
+  <div class="bd">
+    <div class="g4 kbig" style="height:100%;grid-template-rows:1fr 1fr">
+      <div class="kpi big"><div class="ibox sm"><svg class="ic"><use href="#i-clock"/></svg></div><div class="v" style="margin-top:16px">&lt; 90 <small>sn</small></div><div class="l">Ortalama check‑in süresi</div><div class="d">Ön check‑in yapanlarda &lt; 30 sn</div></div>
+      <div class="kpi big"><div class="ibox sm"><svg class="ic"><use href="#i-check"/></svg></div><div class="v" style="margin-top:16px">&gt; %90</div><div class="l">Yardımsız tamamlama</div><div class="d">Görevliye bağlanmadan biten işlemler</div></div>
+      <div class="kpi big"><div class="ibox sm"><svg class="ic"><use href="#i-door"/></svg></div><div class="v" style="margin-top:16px">&lt; 1 <small>sn</small></div><div class="l">Kapı açılış süresi</div><div class="d">Yüz veya mobil anahtarla</div></div>
+      <div class="kpi big"><div class="ibox sm"><svg class="ic"><use href="#i-face"/></svg></div><div class="v" style="margin-top:16px">≤ %2</div><div class="l">Yanlış ret (FRR)</div><div class="d">Yanlış kabul (FAR) ≤ 1/100.000</div></div>
+      <div class="kpi big"><div class="ibox sm"><svg class="ic"><use href="#i-server"/></svg></div><div class="v" style="margin-top:16px">%99,9</div><div class="l">Sistem erişilebilirliği</div><div class="d">Kapılar çevrimdışı da çalışır</div></div>
+      <div class="kpi big"><div class="ibox sm"><svg class="ic"><use href="#i-smile"/></svg></div><div class="v" style="margin-top:16px">&gt; 50</div><div class="l">Misafir memnuniyeti (NPS)</div><div class="d">Check‑out'ta tek dokunuş anket</div></div>
+      <div class="kpi big"><div class="ibox sm"><svg class="ic"><use href="#i-coin"/></svg></div><div class="v" style="margin-top:16px">&gt; %10</div><div class="l">Ekstra satış dönüşümü</div><div class="d">Kiosk ve uygulama teklifleri</div></div>
+      <div class="kpi big"><div class="ibox sm"><svg class="ic"><use href="#i-chart"/></svg></div><div class="v" style="margin-top:16px">−%50+</div><div class="l">Dolu oda başı ön büro maliyeti</div><div class="d">Klasik modele göre</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 30 · RİSKLER -->
+<section class="slide">
+  <div class="kicker"><span class="sec">10</span>Riskler &amp; önlemler</div>
+  <h2>Riskleri baştan yönet</h2>
+  <div class="bd">
+    <table class="tbl roomy">
+      <thead><tr><th style="width:250px">Risk</th><th style="width:90px">Etki</th><th>Önlem</th></tr></thead>
+      <tbody>
+        <tr><td>Mevzuat (KVKK, turizm belgesi, KBS, 5651)</td><td><span class="pill red">Yüksek</span></td><td>Faz 0'da hukuki görüş; biyometri isteğe bağlı; uzaktan resepsiyonla 7/24 hizmet şartı</td></tr>
+        <tr><td>Teknik arıza / kesinti</td><td><span class="pill red">Yüksek</span></td><td>Çevrimdışı çalışan kilitler, çoklu anahtar yöntemi, UPS, 4G yedek hat, 7/24 uzaktan izleme</td></tr>
+        <tr><td>Siber saldırı / veri ihlali</td><td><span class="pill red">Yüksek</span></td><td>Şifreleme, ağ ayrımı, sızma testleri, minimum veri, otomatik silme, olay müdahale planı</td></tr>
+        <tr><td>Misafir kabulü (yaşlı, teknolojiye uzak)</td><td><span class="pill amber">Orta</span></td><td>Sade arayüz, büyük yazı, sesli yönlendirme, her ekranda görüntülü insan desteği</td></tr>
+        <tr><td>Yüz tanıma hataları / önyargı</td><td><span class="pill amber">Orta</span></td><td>Bağımsız testlerde başarılı motor, demografik testler, her zaman alternatif yöntem</td></tr>
+        <tr><td>Sahtecilik (sahte kimlik, maske)</td><td><span class="pill amber">Orta</span></td><td>Çip imza doğrulaması, sertifikalı canlılık testi, şüphede insan onayı</td></tr>
+        <tr><td>Tedarikçi bağımlılığı</td><td><span class="pill amber">Orta</span></td><td>Açık standartlar, çoklu kilit / SDK / PMS desteği, soyutlama katmanı</td></tr>
+        <tr><td>Vandalizm / kiosk hasarı</td><td><span class="pill gray">Düşük</span></td><td>Darbeye dayanıklı donanım, lobi kamerası, ikinci kiosk veya tablet yedeği</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 31 · SONRAKİ ADIMLAR -->
+<section class="slide">
+  <div class="kicker"><span class="sec">10</span>Sonraki adımlar</div>
+  <h2>Önümüzdeki 8 hafta ve verilmesi gereken kararlar</h2>
+  <div class="bd" style="display:grid;grid-template-columns:1fr 440px;gap:24px">
+    <div style="display:flex;flex-direction:column">
+      <div class="sl" style="grid-template-columns:1fr">
+        <div class="s"><span class="n">1</span><div><h4>Hukuki ön görüş</h4><p>KVKK (biyometri), turizm tesisi belgesi şartları, KBS entegrasyonu, 5651 yükümlülükleri</p></div><span class="t">Hafta 1–3</span></div>
+        <div class="s"><span class="n">2</span><div><h4>Pilot tesis ve oda sayısı</h4><p>Mevcut PMS, Wi‑Fi altyapısı, kapı tipi ve ağ durumunun keşfi</p></div><span class="t">Hafta 1–2</span></div>
+        <div class="s"><span class="n">3</span><div><h4>Tedarikçi teklifleri</h4><p>Kiosk, API'li kilit, yüz tanıma SDK, Wi‑Fi: her biri için en az 3 teklif</p></div><span class="t">Hafta 2–6</span></div>
+        <div class="s"><span class="n">4</span><div><h4>Tıklanabilir prototip + kullanıcı testi</h4><p>Kiosk akışı 10–15 gerçek misafirle; farklı yaş grupları dahil</p></div><span class="t">Hafta 3–7</span></div>
+        <div class="s"><span class="n">5</span><div><h4>Bütçe ve ekip onayı → Faz 1 başlangıcı</h4><p>Netleşen teklifler ve test sonuçlarıyla güncellenmiş iş planı</p></div><span class="t">Hafta 8</span></div>
+      </div>
+      <div class="band" style="margin-top:auto"><svg class="ic" style="color:#5FD3CA"><use href="#i-star"/></svg><div><b>Hedef kilometre taşı:</b> 6. ayın sonunda pilot otelde ilk misafir, resepsiyona uğramadan odasına girer.</div></div>
+    </div>
+    <div class="dkp" style="background:var(--ink);border-radius:16px;padding:24px 26px;color:var(--d-text);display:flex;flex-direction:column">
+      <div class="kicker" style="color:#5FD3CA">Karar noktaları</div>
+      <div style="display:flex;flex-direction:column;justify-content:space-around;flex:1;margin-top:8px">
+        <div><div style="font-size:17px;font-weight:650;line-height:1.3">1. Önce kendi otelimiz mi, doğrudan SaaS ürünü mü?</div><div class="note" style="margin-top:5px;font-size:13.5px">Öneri: kendi tesiste pilot, paralelde 2–3 dost otelle ön görüşme</div></div>
+        <div><div style="font-size:17px;font-weight:650;line-height:1.3">2. Yüz doğrulama MVP'de mi, Faz 2'de mi?</div><div class="note" style="margin-top:5px;font-size:13.5px">Öneri: kiosk'ta MVP'de, kapıda pilot odalarla başla</div></div>
+        <div><div style="font-size:17px;font-weight:650;line-height:1.3">3. Wi‑Fi: entegrasyon mu, kendi hotspot'umuz mu?</div><div class="note" style="margin-top:5px;font-size:13.5px">Öneri: Mod A ile başla, Mod B'yi Faz 3'te modül olarak sun</div></div>
+        <div><div style="font-size:17px;font-weight:650;line-height:1.3">4. Donanım satış mı, kiralama mı?</div><div class="note" style="margin-top:5px;font-size:13.5px">Öneri: ikisi birden; kiralama küçük tesislerde giriş bariyerini düşürür</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 32 · KAPANIŞ -->
+<section class="slide dark" style="justify-content:center;align-items:flex-start;padding-left:96px" data-nofoot>
+  <div class="kicker">LOBİ · Akıllı konaklama platformu</div>
+  <div style="font-family:'Inter Display',Inter;font-size:64px;font-weight:800;letter-spacing:-.03em;line-height:1.05;margin-top:20px;max-width:900px">Kuyruk yok. Anahtar yok.<br><span style="color:#5FD3CA">Sadece “hoş geldiniz”.</span></div>
+  <div class="lead" style="font-size:18px;margin-top:22px;max-width:760px">Bu taslak tartışmaya açıktır. Bir sonraki adım: hukuki ön görüş, pilot tesis seçimi ve kullanıcı testli prototip.</div>
+  <div style="display:flex;gap:10px;margin-top:34px">
+    <span class="pill dk" style="font-size:12.5px;padding:6px 12px">Kiosk</span><span class="pill dk" style="font-size:12.5px;padding:6px 12px">Akıllı kapı</span><span class="pill dk" style="font-size:12.5px;padding:6px 12px">Dijital anahtar</span><span class="pill dk" style="font-size:12.5px;padding:6px 12px">PMS</span><span class="pill dk" style="font-size:12.5px;padding:6px 12px">Wi‑Fi hotspot</span><span class="pill dk" style="font-size:12.5px;padding:6px 12px">AI asistan</span>
+  </div>
+</section>
+
+<script>
+(function(){
+  var slides=document.querySelectorAll('.slide');
+  var total=slides.length;
+  slides.forEach(function(s,i){
+    if(s.hasAttribute('data-nofoot')) return;
+    var f=document.createElement('div');
+    f.className='foot';
+    f.innerHTML='<span><b>LOBİ</b> · Akıllı konaklama platformu · Proje taslağı</span><span>'+String(i+1).padStart(2,'0')+' / '+total+'</span>';
+    s.appendChild(f);
+  });
+})();
+</script>
+</body>
+</html>
