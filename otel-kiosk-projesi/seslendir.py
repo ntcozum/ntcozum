@@ -18,6 +18,7 @@ Kullanım:  python seslendir.py                  (Emel, internet gerekir)
 import argparse
 import asyncio
 import hashlib
+import os
 import re
 import shutil
 import subprocess
@@ -71,7 +72,9 @@ async def seslendir(slaytlar, klasor, ses, hiz):
         imza_dosyasi = hedef.with_suffix(".imza")
         if not (hedef.exists() and imza_dosyasi.exists() and imza_dosyasi.read_text() == imza):
             print(f"  ses üretiliyor: slayt {no:02d}")
-            await edge_tts.Communicate(metin, ses, rate=hiz).save(str(hedef))
+            # Bulut ortamında aiohttp vekil sunucuyu kendiliğinden kullanmaz; varsa açıkça verilir.
+            vekil = os.environ.get("HTTPS_PROXY") or os.environ.get("https_proxy")
+            await edge_tts.Communicate(metin, ses, rate=hiz, proxy=vekil).save(str(hedef))
             imza_dosyasi.write_text(imza)
         dosyalar.append(hedef)
     return dosyalar
@@ -242,7 +245,7 @@ def main():
                    help="edge: Emel sinir ağı sesi (internet gerekir) · mbrola: çevrimdışı Türkçe kadın sesi (tr2)")
     p.add_argument("--ses", default="tr-TR-EmelNeural", help="Edge TTS ses adı (varsayılan: Emel, kadın)")
     p.add_argument("--hiz", default="-4%", help="Edge konuşma hızı, ör. -4%% veya +5%%")
-    p.add_argument("--kelime-hizi", type=int, default=165, help="mbrola: dakikadaki kelime sayısı")
+    p.add_argument("--kelime-hizi", type=int, default=140, help="mbrola: dakikadaki kelime sayısı")
     p.add_argument("--tonlama", type=float, default=1.3, help="mbrola: tonlama aralığı çarpanı (1 = espeak varsayılanı)")
     p.add_argument("--test", action="store_true", help="Ses servisi olmadan sessiz deneme (çıktılar geçici klasöre)")
     a = p.parse_args()

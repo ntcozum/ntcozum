@@ -1,0 +1,328 @@
+<title>LOBİ Sesli Sunum</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+  /* Sinema düzeni: ortada slayt, altında altyazı, en altta kumanda; tek ve koyu bir görünüm (bilerek). */
+  :root {
+    color-scheme: dark;
+    --bg: #0B1320;
+    --panel: #121D2E;
+    --line: #22324A;
+    --fg: #E9EEF5;
+    --muted: #93A3B8;
+    --accent: #5FD3CA;
+    --accent-ink: #052A27;
+    --warn: #F2B35B;
+    --font-ui: "Figtree", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --font-num: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { background: var(--bg); color: var(--fg); }
+  body { font-family: var(--font-ui); font-size: 15px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+  .wrap {
+    max-width: 1120px; margin: 0 auto;
+    padding-block: 20px 40px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  .top { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .brand { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  .logo { font-weight: 700; font-size: 22px; letter-spacing: -0.02em; }
+  .logo span { color: var(--accent); }
+  .sub { color: var(--muted); font-size: 13.5px; }
+  .chip { font-size: 13px; color: var(--muted); border: 1px solid var(--line); background: var(--panel); border-radius: 999px; padding: 5px 12px; display: inline-flex; align-items: center; gap: 8px; max-width: 100%; }
+  .chip i { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); flex: none; }
+  .chip.ok i { background: var(--accent); }
+  .chip.warn { color: var(--warn); border-color: color-mix(in srgb, var(--warn) 40%, var(--line)); }
+  .chip.warn i { background: var(--warn); }
+
+  .stage { position: relative; aspect-ratio: 16 / 9; max-width: 100%; border-radius: 10px; overflow: hidden; background: var(--panel); box-shadow: 0 24px 60px -30px rgba(0, 0, 0, 0.8); }
+  .stage img { display: block; width: 100%; height: 100%; object-fit: contain; }
+  .start { position: absolute; inset: 0; display: grid; place-items: center; background: rgba(6, 12, 22, 0.55); border: 0; cursor: pointer; color: var(--fg); font: inherit; }
+  .start span { display: inline-flex; align-items: center; gap: 12px; background: var(--accent); color: var(--accent-ink); font-weight: 700; font-size: 18px; padding: 14px 26px; border-radius: 999px; box-shadow: 0 10px 30px -10px rgba(95, 211, 202, 0.6); }
+  .start:hover span, .start:focus-visible span { filter: brightness(1.06); }
+  .start:focus-visible { outline: 3px solid var(--accent); outline-offset: -3px; }
+
+  .caption { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px 18px; min-height: 104px; display: flex; flex-direction: column; gap: 4px; }
+  .ctitle { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); font-family: var(--font-num); }
+  .caption p { margin: 0; font-size: 19px; line-height: 1.5; max-width: 70ch; text-wrap: pretty; }
+
+  .controls { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 44px; min-width: 44px; padding: 0 14px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel); color: var(--fg); font: inherit; font-weight: 600; cursor: pointer; }
+  .btn:hover { border-color: var(--muted); }
+  .btn:focus-visible, select:focus-visible, .seg button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); min-width: 132px; }
+  .btn svg { width: 18px; height: 18px; fill: currentColor; }
+  .count { font-family: var(--font-num); font-size: 14px; color: var(--muted); font-variant-numeric: tabular-nums; padding: 0 4px; }
+  .spacer { flex: 1; }
+  .field { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); font-size: 13px; }
+  select { height: 40px; border-radius: 10px; border: 1px solid var(--line); background: var(--panel); color: var(--fg); font: inherit; font-size: 14px; padding: 0 10px; max-width: 260px; }
+
+  .seg { display: flex; gap: 3px; }
+  .seg button { flex: 1; height: 8px; border: 0; padding: 0; border-radius: 3px; background: var(--line); cursor: pointer; }
+  .seg button.done { background: color-mix(in srgb, var(--accent) 45%, var(--line)); }
+  .seg button.now { background: var(--accent); }
+
+  .help { color: var(--muted); font-size: 13.5px; line-height: 1.55; border-top: 1px solid var(--line); padding-top: 14px; display: grid; gap: 6px; }
+  .help b { color: var(--fg); font-weight: 600; }
+  .help .warn { color: var(--warn); }
+
+  @media (max-width: 640px) {
+    .caption p { font-size: 16.5px; }
+    .spacer { display: none; }
+    .controls .field { flex: 1 1 100%; }
+    .controls .field select { flex: 1; max-width: none; }
+    .btn.primary { flex: 1; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .stage img { transition: opacity 0.25s ease; }
+    .stage img.fade { opacity: 0.35; }
+  }
+</style>
+
+<main class="wrap">
+  <header class="top">
+    <div class="brand"><span class="logo">LOB<span>İ</span></span><span class="sub">Sesli proje sunumu · 33 slayt · yaklaşık 20 dakika</span></div>
+    <div class="chip" id="durum"><i></i><span>Türkçe ses aranıyor…</span></div>
+  </header>
+
+  <section class="stage">
+    <img id="slayt" src="slides/s01.jpg" alt="Slayt 1: Kapak">
+    <button class="start" id="baslat" type="button" aria-label="Sesli sunumu başlat">
+      <span><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>Sesli sunumu başlat</span>
+    </button>
+  </section>
+
+  <div class="caption" aria-live="polite">
+    <div class="ctitle" id="baslik">Slayt 1 · Kapak</div>
+    <p id="altyazi">Başlattığınızda anlatım okunur, slaytlar kendiliğinden ilerler ve okunan cümle burada görünür.</p>
+  </div>
+
+  <div class="controls">
+    <button class="btn" id="onceki" type="button" aria-label="Önceki slayt"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6h2v12H6zM9.5 12 18 18V6z"/></svg></button>
+    <button class="btn primary" id="oynat" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><span>Başlat</span></button>
+    <button class="btn" id="sonraki" type="button" aria-label="Sonraki slayt"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 6h2v12h-2zM6 18l8.5-6L6 6z"/></svg></button>
+    <span class="count" id="sayac">01 / 33</span>
+    <span class="spacer"></span>
+    <label class="field" for="hiz">Hız
+      <select id="hiz">
+        <option value="0.8">Yavaş (0,8×)</option>
+        <option value="0.9" selected>Normal (0,9×)</option>
+        <option value="1">Biraz hızlı (1×)</option>
+        <option value="1.1">Hızlı (1,1×)</option>
+      </select>
+    </label>
+    <label class="field" for="ses">Ses
+      <select id="ses"><option value="">Varsayılan Türkçe ses</option></select>
+    </label>
+  </div>
+
+  <div class="seg" id="bolumler" aria-label="Slaytlar"></div>
+
+  <div class="help" id="yardim">
+    <div><b>En doğal ses için:</b> bilgisayarda Microsoft Edge ile açın (Emel sesi). iPhone ve Mac'te Safari Yelda sesini, Android'de Chrome Google'ın Türkçe sesini kullanır.</div>
+    <div><b>Kısayollar:</b> boşluk tuşu başlatır ya da duraklatır, sağ ve sol ok tuşları slayt değiştirir.</div>
+    <div><b>Video gerekiyorsa:</b> sunum oynarken ekran kaydı alın (Windows'ta Win + Alt + R, iPhone'da Denetim Merkezi'ndeki Ekran Kaydı).</div>
+    <div class="warn" id="uyari" hidden></div>
+  </div>
+</main>
+
+<script>
+const SLAYTLAR = [{"no": 1, "baslik": "Kapak", "gorsel": "slides/s01.jpg", "cumleler": [["Merhaba, hoş geldiniz.", "Merhaba, hoş geldiniz."], ["Size bugün LOBİ'yi anlatacağım: resepsiyon masası olmayan, kiosk tabanlı akıllı bir konaklama platformu.", "Size bugün Lobi'yi anlatacağım: resepsiyon masası olmayan, kiosk tabanlı akıllı bir konaklama platformu."], ["Fikir çok basit.", "Fikir çok basit."], ["Misafir otele geldiğinde lobideki kiosk'ta kendi girişini yapıyor, kimliği çipten doğrulanıyor ve odasının kapısını telefonundaki ya da kâğıttaki şifreli bir karekodla açıyor.", "Misafir otele geldiğinde lobideki kiosk'ta kendi girişini yapıyor, kimliği çipten doğrulanıyor ve odasının kapısını telefonundaki ya da kâğıttaki şifreli bir karekodla açıyor."], ["Otel programı ve kablosuz internet de dahil olmak üzere her şey tek bir platformda toplanıyor.", "Otel programı ve kablosuz internet de dahil olmak üzere her şey tek bir platformda toplanıyor."]]}, {"no": 2, "baslik": "Gündem", "gorsel": "slides/s02.jpg", "cumleler": [["Sunumu on bölümde ilerleteceğiz.", "Sunumu on bölümde ilerleteceğiz."], ["Önce klasik resepsiyonun sorunlarına ve buradaki fırsata bakacağız.", "Önce klasik resepsiyonun sorunlarına ve buradaki fırsata bakacağız."], ["Ardından çözümü, misafir yolculuğunu ve donanımı anlatacağım.", "Ardından çözümü, misafir yolculuğunu ve donanımı anlatacağım."], ["Sonra kimlik doğrulama, kişisel verilerin korunması ve güvenlik konularına geçeceğiz.", "Sonra kimlik doğrulama, kişisel verilerin korunması ve güvenlik konularına geçeceğiz."], ["Mimariyi, entegrasyonları, yenilikçi özellikleri ve operasyon modelini konuşacağız.", "Mimariyi, entegrasyonları, yenilikçi özellikleri ve operasyon modelini konuşacağız."], ["Son bölümlerde de yol haritası, bütçe, iş modeli, riskler ve atmamız gereken ilk adımlar var.", "Son bölümlerde de yol haritası, bütçe, iş modeli, riskler ve atmamız gereken ilk adımlar var."]]}, {"no": 3, "baslik": "Yönetici özeti", "gorsel": "slides/s03.jpg", "cumleler": [["Kısaca özetlemek gerekirse: kuyruk yok, anahtar yok, resepsiyon masası yok.", "Kısaca özetlemek gerekirse: kuyruk yok, anahtar yok, resepsiyon masası yok."], ["Misafir otele geliyor, kiosk'ta iki dakikadan kısa sürede girişini yapıyor ve odasının kapısını telefonundaki karekodla açıyor.", "Misafir otele geliyor, kiosk'ta iki dakikadan kısa sürede girişini yapıyor ve odasının kapısını telefonundaki karekodla açıyor."], ["LOBİ; kimlik kontrolünden yasal bildirime, ödemeden faturaya kadar resepsiyonun bütün işlerini üstleniyor.", "Lobi; kimlik kontrolünden yasal bildirime, ödemeden faturaya kadar resepsiyonun bütün işlerini üstleniyor."], ["Bunu yapmamızın sebebi açık: yedi gün yirmi dört saat çalışan bir resepsiyon kadrosu hem pahalı, hem de bulunması giderek zorlaşıyor.", "Bunu yapmamızın sebebi açık: yedi gün yirmi dört saat çalışan bir resepsiyon kadrosu hem pahalı, hem de bulunması giderek zorlaşıyor."], ["Hedefimiz, önce kendi tesisimizde altı ayda ilk sürümü çıkarmak, ardından bu ürünü diğer otellere abonelik modeliyle sunmak.", "Hedefimiz, önce kendi tesisimizde altı ayda ilk sürümü çıkarmak, ardından bu ürünü diğer otellere abonelik modeliyle sunmak."], ["Örnek hesabımızda yatırım, kırk odalı bir otelde sekiz ile on dokuz ay arasında kendini ödüyor.", "Örnek hesabımızda yatırım, kırk odalı bir otelde sekiz ile on dokuz ay arasında kendini ödüyor."]]}, {"no": 4, "baslik": "Problem ve fırsat", "gorsel": "slides/s04.jpg", "cumleler": [["Peki sorun ne?", "Peki sorun ne?"], ["Birincisi personel.", "Birincisi personel."], ["Yedi gün yirmi dört saat açık bir ön büro için en az dört, beş kişilik bir kadro gerekiyor; yabancı dil bilen nitelikli personel bulmak ise her geçen yıl zorlaşıyor.", "Yedi gün yirmi dört saat açık bir ön büro için en az dört, beş kişilik bir kadro gerekiyor; yabancı dil bilen nitelikli personel bulmak ise her geçen yıl zorlaşıyor."], ["İkincisi kuyruk.", "İkincisi kuyruk."], ["Yoğun saatlerde misafir bekliyor, gece geç gelen misafir ise kapalı bir resepsiyonla karşılaşabiliyor.", "Yoğun saatlerde misafir bekliyor, gece geç gelen misafir ise kapalı bir resepsiyonla karşılaşabiliyor."], ["Üçüncüsü fiziksel kartlar: kayboluyor, bozuluyor, kopyalanabiliyor.", "Üçüncüsü fiziksel kartlar: kayboluyor, bozuluyor, kopyalanabiliyor."], ["Dördüncüsü de elle yapılan yasal işler.", "Dördüncüsü de elle yapılan yasal işler."], ["Fırsat tarafında ise tablo çok net.", "Fırsat tarafında ise tablo çok net."], ["Misafirler self servise alıştı, kimlikler artık çipli ve herkesin cebinde kameralı bir telefon var.", "Misafirler self servise alıştı, kimlikler artık çipli ve herkesin cebinde kameralı bir telefon var."], ["Yani kartsız ve uygulamasız bir dijital anahtar artık mümkün.", "Yani kartsız ve uygulamasız bir dijital anahtar artık mümkün."]]}, {"no": 5, "baslik": "Çözüm", "gorsel": "slides/s05.jpg", "cumleler": [["Çözümümüz dört bileşenden oluşuyor.", "Çözümümüz dört bileşenden oluşuyor."], ["İlki lobideki self servis kiosk.", "İlki lobideki self servis kiosk."], ["Rezervasyonu buluyor, kimliği okuyor, ödemeyi alıyor ve anahtarı üretiyor.", "Rezervasyonu buluyor, kimliği okuyor, ödemeyi alıyor ve anahtarı üretiyor."], ["İkincisi, her odanın kapısındaki akıllı ünite.", "İkincisi, her odanın kapısındaki akıllı ünite."], ["Misafirin karekodunu okuyor ve internete ihtiyaç duymadan kendisi doğruluyor.", "Misafirin karekodunu okuyor ve internete ihtiyaç duymadan kendisi doğruluyor."], ["Üçüncüsü misafirin telefonu: ön check-in, karekod anahtar, ekstra hizmetler ve tek dokunuşla çıkış.", "Üçüncüsü misafirin telefonu: ön check-in, karekod anahtar, ekstra hizmetler ve tek dokunuşla çıkış."], ["Dördüncüsü de yönetim paneli.", "Dördüncüsü de yönetim paneli."], ["Tesis yöneticisi bütün odaları, kapıları ve raporları tek ekrandan izliyor.", "Tesis yöneticisi bütün odaları, kapıları ve raporları tek ekrandan izliyor."], ["Bütün bunlar otel programı, kanal yöneticisi, kablosuz internet, ödeme sistemi, Kimlik Bildirme Sistemi ve e-fatura ile entegre çalışıyor.", "Bütün bunlar otel programı, kanal yöneticisi, kablosuz internet, ödeme sistemi, Kimlik Bildirme Sistemi ve e-fatura ile entegre çalışıyor."]]}, {"no": 6, "baslik": "Misafir yolculuğu", "gorsel": "slides/s06.jpg", "cumleler": [["Şimdi misafirin gözünden bakalım.", "Şimdi misafirin gözünden bakalım."], ["Misafir rezervasyonunu yapıyor ve onay e-postasıyla birlikte bir ön check-in bağlantısı alıyor.", "Misafir rezervasyonunu yapıyor ve onay e-postasıyla birlikte bir ön check-in bağlantısı alıyor."], ["İsterse kimliğini ve ödemesini daha yola çıkmadan tamamlıyor.", "İsterse kimliğini ve ödemesini daha yola çıkmadan tamamlıyor."], ["Otele geldiğinde kiosk rezervasyonunu buluyor, kimliğini çipten okuyor ve yüzünü kimlik fotoğrafıyla eşleştiriyor.", "Otele geldiğinde kiosk rezervasyonunu buluyor, kimliğini çipten okuyor ve yüzünü kimlik fotoğrafıyla eşleştiriyor."], ["Ödemeden sonra karekod anahtar telefonuna geliyor ya da kâğıda basılıyor.", "Ödemeden sonra karekod anahtar telefonuna geliyor ya da kâğıda basılıyor."], ["Lobide geçen süre yaklaşık doksan saniye.", "Lobide geçen süre yaklaşık doksan saniye."], ["Misafir kapıda karekodunu okutuyor; oda onu ışıklar ve klimayla karşılıyor.", "Misafir kapıda karekodunu okutuyor; oda onu ışıklar ve klimayla karşılıyor."], ["Çıkışta fatura e-postasına geliyor, anahtar ve internet erişimi kendiliğinden iptal oluyor.", "Çıkışta fatura e-postasına geliyor, anahtar ve internet erişimi kendiliğinden iptal oluyor."], ["Bu arada yasal bildirim, otel programına kayıt ve temizlik görevi gibi işler arka planda otomatik olarak yürüyor.", "Bu arada yasal bildirim, otel programına kayıt ve temizlik görevi gibi işler arka planda otomatik olarak yürüyor."]]}, {"no": 7, "baslik": "Kiosk check-in akışı", "gorsel": "slides/s07.jpg", "cumleler": [["Kiosk'taki akışı on adıma böldük ve ortalama doksan saniye hedefliyoruz.", "Kiosk'taki akışı on adıma böldük ve ortalama doksan saniye hedefliyoruz."], ["Misafir dilini seçiyor, rezervasyonunu buluyor, kimliğini okutuyor ve kısa bir yüz eşleştirmesinden geçiyor.", "Misafir dilini seçiyor, rezervasyonunu buluyor, kimliğini okutuyor ve kısa bir yüz eşleştirmesinden geçiyor."], ["Kişisel verilerle ilgili bilgilendirmeyi görüp onay veriyor.", "Kişisel verilerle ilgili bilgilendirmeyi görüp onay veriyor."], ["Varsa diğer misafirleri ekliyor, isterse oda yükseltme ya da kahvaltı gibi teklifleri değerlendiriyor ve ödemesini yapıyor.", "Varsa diğer misafirleri ekliyor, isterse oda yükseltme ya da kahvaltı gibi teklifleri değerlendiriyor ve ödemesini yapıyor."], ["Son adımda, ekranda gördüğünüz gibi, anahtarı hazır.", "Son adımda, ekranda gördüğünüz gibi, anahtarı hazır."], ["Telefonuna gönderebiliyor, cüzdan uygulamasına ekleyebiliyor ya da kâğıda yazdırabiliyor.", "Telefonuna gönderebiliyor, cüzdan uygulamasına ekleyebiliyor ya da kâğıda yazdırabiliyor."], ["Her ekranda bir yardım butonu var; tek dokunuşla gerçek bir resepsiyonistle görüntülü konuşabiliyor.", "Her ekranda bir yardım butonu var; tek dokunuşla gerçek bir resepsiyonistle görüntülü konuşabiliyor."], ["Ön check-in yapan misafir için bu süre otuz saniyeye iniyor.", "Ön check-in yapan misafir için bu süre otuz saniyeye iniyor."]]}, {"no": 8, "baslik": "Kiosk donanımı", "gorsel": "slides/s08.jpg", "cumleler": [["Kiosk lobideki tek resepsiyonistimiz, bu yüzden donanımını özenle seçiyoruz.", "Kiosk lobideki tek resepsiyonistimiz, bu yüzden donanımını özenle seçiyoruz."], ["Büyük bir dokunmatik ekran, canlılık testi yapabilen derinlik algılayan bir kamera, hem Türk kimlik kartının hem de pasaportların çipini okuyabilen bir okuyucu, temassız ödeme alan bir cihaz ve rezervasyon karekodlarını okuyan bir tarayıcı var.", "Büyük bir dokunmatik ekran, canlılık testi yapabilen derinlik algılayan bir kamera, hem Türk kimlik kartının hem de pasaportların çipini okuyabilen bir okuyucu, temassız ödeme alan bir cihaz ve rezervasyon karekodlarını okuyan bir tarayıcı var."], ["Telefonu olmayan misafir için bir termal yazıcı kâğıt karekod anahtar basıyor; böylece kart dağıtıcıya ve kart maliyetine gerek kalmıyor.", "Telefonu olmayan misafir için bir termal yazıcı kâğıt karekod anahtar basıyor; böylece kart dağıtıcıya ve kart maliyetine gerek kalmıyor."], ["İçeride yüz eşleştirmesini yerel olarak yapan bir bilgisayar, kesintisiz güç kaynağı ve mobil yedek internet hattı bulunuyor.", "İçeride yüz eşleştirmesini yerel olarak yapan bir bilgisayar, kesintisiz güç kaynağı ve mobil yedek internet hattı bulunuyor."], ["Tekerlekli sandalye kullanan misafirler için alçak ekran modu ve sesli yönlendirme de unutulmadı.", "Tekerlekli sandalye kullanan misafirler için alçak ekran modu ve sesli yönlendirme de unutulmadı."]]}, {"no": 9, "baslik": "Akıllı kapı ünitesi", "gorsel": "slides/s09.jpg", "cumleler": [["Her oda kapısında küçük bir akıllı ünite var.", "Her oda kapısında küçük bir akıllı ünite var."], ["Dış yüzünde karekod okuyan bir kamera, misafiri karşılayan küçük bir ekran, yedek bir PIN tuş takımı ve bir durum ışığı bulunuyor.", "Dış yüzünde karekod okuyan bir kamera, misafiri karşılayan küçük bir ekran, yedek bir pin tuş takımı ve bir durum ışığı bulunuyor."], ["İç taraftan kapı her zaman tek hareketle açılıyor; bu, yangın yönetmeliği açısından şart.", "İç taraftan kapı her zaman tek hareketle açılıyor; bu, yangın yönetmeliği açısından şart."], ["Yönetim ve itfaiye için mekanik bir acil durum kilidi de var.", "Yönetim ve itfaiye için mekanik bir acil durum kilidi de var."], ["En önemli nokta şu: kapı, karekodun içindeki dijital imzayı, geçerlilik süresini ve oda numarasını kendisi kontrol ediyor.", "En önemli nokta şu: kapı, karekodun içindeki dijital imzayı, geçerlilik süresini ve oda numarasını kendisi kontrol ediyor."], ["Yani internet kesilse bile kapı açılıyor.", "Yani internet kesilse bile kapı açılıyor."], ["Biyometrik veri kullanılmadığı için hukuki yük çok düşük; basit bir kamera yettiği için de ünite ucuz.", "Biyometrik veri kullanılmadığı için hukuki yük çok düşük; basit bir kamera yettiği için de ünite ucuz."]]}, {"no": 10, "baslik": "Dijital anahtar seçenekleri", "gorsel": "slides/s10.jpg", "cumleler": [["Anahtar modelimizin merkezinde karekod var.", "Anahtar modelimizin merkezinde karekod var."], ["Misafirlerin çoğu anahtarını telefonunda kullanacak: kısa mesajla gelen bağlantıda ya da cüzdan uygulamasında.", "Misafirlerin çoğu anahtarını telefonunda kullanacak: kısa mesajla gelen bağlantıda ya da cüzdan uygulamasında."], ["Uygulama indirmek gerekmiyor ve telefondaki kod her otuz saniyede bir yenileniyor.", "Uygulama indirmek gerekmiyor ve telefondaki kod her otuz saniyede bir yenileniyor."], ["Telefonu olmayan misafire kiosk kâğıt karekod basıyor.", "Telefonu olmayan misafire kiosk kâğıt karekod basıyor."], ["Her misafirin bir de yedek PIN kodu var.", "Her misafirin bir de yedek pin kodu var."], ["Ana misafir anahtarını odadaki diğer kişilerle paylaşabiliyor; temizlik ve teknik ekip ise yalnızca görev saatinde geçerli olan kendi kodlarını kullanıyor.", "Ana misafir anahtarını odadaki diğer kişilerle paylaşabiliyor; temizlik ve teknik ekip ise yalnızca görev saatinde geçerli olan kendi kodlarını kullanıyor."], ["Yüzle kapı açmayı ise ileride, isteyen misafire ayrı bir onayla sunulacak premium bir seçenek olarak düşünüyoruz.", "Yüzle kapı açmayı ise ileride, isteyen misafire ayrı bir onayla sunulacak premium bir seçenek olarak düşünüyoruz."], ["Telefon ya da kâğıt kaybolursa misafir kiosk'ta saniyeler içinde yeni anahtar alıyor, eskisi anında iptal ediliyor.", "Telefon ya da kâğıt kaybolursa misafir kiosk'ta saniyeler içinde yeni anahtar alıyor, eskisi anında iptal ediliyor."]]}, {"no": 11, "baslik": "Karekod anahtar nasıl çalışır?", "gorsel": "slides/s11.jpg", "cumleler": [["Peki bu karekod neden güvenli?", "Peki bu karekod neden güvenli?"], ["Anahtar oluşturulurken bulut sistemimiz oda numarasını, geçerlilik tarihlerini ve misafir bilgisini otelin gizli anahtarıyla dijital olarak imzalıyor.", "Anahtar oluşturulurken bulut sistemimiz oda numarasını, geçerlilik tarihlerini ve misafir bilgisini otelin gizli anahtarıyla dijital olarak imzalıyor."], ["Kapı yalnızca bu imzayı tanıyor; dolayısıyla sahte bir karekod üretmek mümkün değil.", "Kapı yalnızca bu imzayı tanıyor; dolayısıyla sahte bir karekod üretmek mümkün değil."], ["Telefondaki kod her otuz saniyede bir değiştiği için ekran görüntüsü almak da işe yaramıyor.", "Telefondaki kod her otuz saniyede bir değiştiği için ekran görüntüsü almak da işe yaramıyor."], ["Her anahtar yalnızca bir oda için ve yalnızca konaklama süresince geçerli.", "Her anahtar yalnızca bir oda için ve yalnızca konaklama süresince geçerli."], ["Anahtar kaybolursa iptal listesine giriyor ve kapılar bu listeyi otelin ağından alıyor.", "Anahtar kaybolursa iptal listesine giriyor ve kapılar bu listeyi otelin ağından alıyor."], ["Kâğıt karekod sabit olduğu için, istenirse PIN koduyla birlikte, iki adımlı olarak kullanılabiliyor.", "Kâğıt karekod sabit olduğu için, istenirse pin koduyla birlikte, iki adımlı olarak kullanılabiliyor."], ["Doğrulama kapının içinde yapıldığı için de internet kesintisi kapıyı etkilemiyor.", "Doğrulama kapının içinde yapıldığı için de internet kesintisi kapıyı etkilemiyor."]]}, {"no": 12, "baslik": "Kimlik doğrulama ve yasal bildirim", "gorsel": "slides/s12.jpg", "cumleler": [["Kimlik doğrulamayı dört soru üzerine kurduk.", "Kimlik doğrulamayı dört soru üzerine kurduk."], ["Belge gerçek mi?", "Belge gerçek mi?"], ["Bunu kimlik çipinin dijital imzasıyla kontrol ediyoruz.", "Bunu kimlik çipinin dijital imzasıyla kontrol ediyoruz."], ["Karşımızdaki gerçek bir insan mı?", "Karşımızdaki gerçek bir insan mı?"], ["Bunu canlılık testiyle anlıyoruz; fotoğraf, ekran ya da maske kabul edilmiyor.", "Bunu canlılık testiyle anlıyoruz; fotoğraf, ekran ya da maske kabul edilmiyor."], ["Bu kişi belgenin sahibi mi?", "Bu kişi belgenin sahibi mi?"], ["Çipteki fotoğrafla canlı görüntüyü birebir karşılaştırıyoruz.", "Çipteki fotoğrafla canlı görüntüyü birebir karşılaştırıyoruz."], ["Son olarak da rezervasyon, yaş ve ödeme kuralları uygun mu, ona bakıyoruz.", "Son olarak da rezervasyon, yaş ve ödeme kuralları uygun mu, ona bakıyoruz."], ["Türkiye'ye özel işler de otomatik.", "Türkiye'ye özel işler de otomatik."], ["Konaklayanların Emniyet ve Jandarma'ya bildirildiği Kimlik Bildirme Sistemi, kiosk'ta okunan verilerle dolduruluyor.", "Konaklayanların Emniyet ve Jandarma'ya bildirildiği Kimlik Bildirme Sistemi, kiosk'ta okunan verilerle dolduruluyor."], ["Çıkışta e-fatura kendiliğinden kesiliyor, vergiler otomatik hesaplanıyor.", "Çıkışta e-fatura kendiliğinden kesiliyor, vergiler otomatik hesaplanıyor."], ["Yabancı misafirlerin pasaport bilgileri de doğru formatta hazırlanıyor.", "Yabancı misafirlerin pasaport bilgileri de doğru formatta hazırlanıyor."]]}, {"no": 13, "baslik": "Yüz doğrulama", "gorsel": "slides/s13.jpg", "cumleler": [["Yüz doğrulamayı yalnızca kiosk'ta ve yalnızca bir amaç için kullanıyoruz: kimliği getiren kişinin gerçekten o kimliğin sahibi olduğunu anlamak.", "Yüz doğrulamayı yalnızca kiosk'ta ve yalnızca bir amaç için kullanıyoruz: kimliği getiren kişinin gerçekten o kimliğin sahibi olduğunu anlamak."], ["Eşleştirme kiosk'un içinde yapılıyor, buluta yüz görüntüsü gitmiyor.", "Eşleştirme kiosk'un içinde yapılıyor, buluta yüz görüntüsü gitmiyor."], ["Sistemde yüz fotoğrafı ya da yüz şablonu tutulmuyor; sadece doğrulandı bilgisi ve zamanı kaydediliyor.", "Sistemde yüz fotoğrafı ya da yüz şablonu tutulmuyor; sadece doğrulandı bilgisi ve zamanı kaydediliyor."], ["Kalabalık tarama ya da kişi takibi yok, yalnızca birebir karşılaştırma var.", "Kalabalık tarama ya da kişi takibi yok, yalnızca birebir karşılaştırma var."], ["Bunu istemeyen misafir kimliğini görüntülü görevliye gösteriyor ve aynı hizmeti alıyor.", "Bunu istemeyen misafir kimliğini görüntülü görevliye gösteriyor ve aynı hizmeti alıyor."], ["Doğruluk hedeflerimiz de ölçülebilir; örneğin yanlış kabul oranı yüz binde birin altında olacak.", "Doğruluk hedeflerimiz de ölçülebilir; örneğin yanlış kabul oranı yüz binde birin altında olacak."], ["Yüzle kapı açma ise ileriki bir fazda, tamamen isteğe bağlı olarak gelebilir.", "Yüzle kapı açma ise ileriki bir fazda, tamamen isteğe bağlı olarak gelebilir."]]}, {"no": 14, "baslik": "Kişisel veriler ve güvenlik", "gorsel": "slides/s14.jpg", "cumleler": [["Kişisel Verilerin Korunması Kanunu açısından yaklaşımımız net: az veri topla, güçlü şifrele.", "Kişisel Verilerin Korunması Kanunu açısından yaklaşımımız net: az veri topla, güçlü şifrele."], ["Kiosk'taki anlık yüz eşleştirmesi de biyometrik işleme sayıldığı için açık rıza alıyoruz ve reddeden misafire eşdeğer bir yol sunuyoruz.", "Kiosk'taki anlık yüz eşleştirmesi de biyometrik işleme sayıldığı için açık rıza alıyoruz ve reddeden misafire eşdeğer bir yol sunuyoruz."], ["Karekod modeli sayesinde yüz şablonu hiç saklanmıyor.", "Karekod modeli sayesinde yüz şablonu hiç saklanmıyor."], ["Veriler Türkiye'deki veri merkezinde tutuluyor; Avrupalı misafirler için Avrupa'nın veri koruma kurallarına da uyuyoruz.", "Veriler Türkiye'deki veri merkezinde tutuluyor; Avrupalı misafirler için Avrupa'nın veri koruma kurallarına da uyuyoruz."], ["Güvenlik tarafında bütün iletişim şifreli.", "Güvenlik tarafında bütün iletişim şifreli."], ["Otelin imza anahtarı özel bir güvenlik donanımında duruyor, kapılar ise yalnızca doğrulama anahtarını taşıyor.", "Otelin imza anahtarı özel bir güvenlik donanımında duruyor, kapılar ise yalnızca doğrulama anahtarını taşıyor."], ["Kapı, kiosk, ödeme ve misafir ağları birbirinden ayrılmış durumda.", "Kapı, kiosk, ödeme ve misafir ağları birbirinden ayrılmış durumda."], ["Her işlem değiştirilemez şekilde kayıt altına alınıyor ve sistem düzenli olarak sızma testlerinden geçiyor.", "Her işlem değiştirilemez şekilde kayıt altına alınıyor ve sistem düzenli olarak sızma testlerinden geçiyor."]]}, {"no": 15, "baslik": "Sistem mimarisi", "gorsel": "slides/s15.jpg", "cumleler": [["Teknik mimari üç katmandan oluşuyor.", "Teknik mimari üç katmandan oluşuyor."], ["En üstte kanallar var: kiosk, kapı üniteleri, misafir uygulaması, web üzerinden ön check-in ve yönetim paneli.", "En üstte kanallar var: kiosk, kapı üniteleri, misafir uygulaması, web üzerinden ön check-in ve yönetim paneli."], ["Ortada, Türkiye'de barındırılan bulut platformumuz yer alıyor.", "Ortada, Türkiye'de barındırılan bulut platformumuz yer alıyor."], ["Rezervasyon, kimlik doğrulama, karekod anahtar, ödeme, kablosuz internet, yasal bildirim, bildirimler, yapay zekâ asistanı ve raporlama servisleri burada çalışıyor.", "Rezervasyon, kimlik doğrulama, karekod anahtar, ödeme, kablosuz internet, yasal bildirim, bildirimler, yapay zekâ asistanı ve raporlama servisleri burada çalışıyor."], ["Sağ tarafta dış entegrasyonlar var: otel programları, kanal yöneticileri, ödeme sistemleri, Kimlik Bildirme Sistemi ve e-fatura.", "Sağ tarafta dış entegrasyonlar var: otel programları, kanal yöneticileri, ödeme sistemleri, Kimlik Bildirme Sistemi ve e-fatura."], ["En altta da otelin içindeki yerel ağ geçidi bulunuyor; kiosk'ları, kapıları, kablosuz erişim noktalarını ve oda otomasyonunu o yönetiyor.", "En altta da otelin içindeki yerel ağ geçidi bulunuyor; kiosk'ları, kapıları, kablosuz erişim noktalarını ve oda otomasyonunu o yönetiyor."], ["Bu katman sayesinde internet kesilse bile otel çalışmaya devam ediyor.", "Bu katman sayesinde internet kesilse bile otel çalışmaya devam ediyor."]]}, {"no": 16, "baslik": "Otel programı entegrasyonu", "gorsel": "slides/s16.jpg", "cumleler": [["LOBİ otelin mevcut programının yerine geçmiyor, onunla konuşuyor.", "Lobi otelin mevcut programının yerine geçmiyor, onunla konuşuyor."], ["Otel programından rezervasyonları, oda durumlarını ve hesap bilgilerini alıyoruz; karşılığında giriş ve çıkış bilgisini, kimlik verilerini, ödemeleri ve ekstra satışları geri gönderiyoruz.", "Otel programından rezervasyonları, oda durumlarını ve hesap bilgilerini alıyoruz; karşılığında giriş ve çıkış bilgisini, kimlik verilerini, ödemeleri ve ekstra satışları geri gönderiyoruz."], ["Bulut tabanlı programlara doğrudan, yerli programlara bir ara katmanla, eski kurulu sistemlere ise sektör standardı arayüzlerle bağlanıyoruz.", "Bulut tabanlı programlara doğrudan, yerli programlara bir ara katmanla, eski kurulu sistemlere ise sektör standardı arayüzlerle bağlanıyoruz."], ["Her program için ayrı bir bağlayıcı yazdığımızdan, yeni bir program eklemek aylar değil haftalar sürüyor.", "Her program için ayrı bir bağlayıcı yazdığımızdan, yeni bir program eklemek aylar değil haftalar sürüyor."], ["Hiç programı olmayan küçük tesisler için de LOBİ PMS Lite adında hafif bir otel programı sunuyoruz.", "Hiç programı olmayan küçük tesisler için de Lobi pe me se layt adında hafif bir otel programı sunuyoruz."], ["Böylece tek bir abonelikle otel programı, kiosk, akıllı kapı ve internet bir arada geliyor.", "Böylece tek bir abonelikle otel programı, kiosk, akıllı kapı ve internet bir arada geliyor."]]}, {"no": 17, "baslik": "Kablosuz internet", "gorsel": "slides/s17.jpg", "cumleler": [["Kablosuz internet için iki model sunuyoruz.", "Kablosuz internet için iki model sunuyoruz."], ["Birinci modelde otelin mevcut sistemine bağlanıyoruz.", "Birinci modelde otelin mevcut sistemine bağlanıyoruz."], ["Misafir giriş yaptığı anda ona özel internet erişimi açılıyor, çıkışta da kendiliğinden kapanıyor.", "Misafir giriş yaptığı anda ona özel internet erişimi açılıyor, çıkışta da kendiliğinden kapanıyor."], ["Bu, mevcut oteller için en hızlı ve en ucuz yol.", "Bu, mevcut oteller için en hızlı ve en ucuz yol."], ["İkinci modelde kendi hotspot sistemimizi anahtar teslim kuruyoruz: erişim noktaları, markalı karşılama sayfası ve 5651 sayılı kanunun gerektirdiği kayıtlar dahil.", "İkinci modelde kendi hotspot sistemimizi anahtar teslim kuruyoruz: erişim noktaları, markalı karşılama sayfası ve 5651 sayılı kanunun gerektirdiği kayıtlar dahil."], ["Burada ücretli premium internet satmak da mümkün.", "Burada ücretli premium internet satmak da mümkün."], ["Misafir açısından deneyim çok basit: kiosk'taki karekodu okutuyor, telefonu otomatik olarak bağlanıyor ve konaklama boyunca tanınıyor.", "Misafir açısından deneyim çok basit: kiosk'taki karekodu okutuyor, telefonu otomatik olarak bağlanıyor ve konaklama boyunca tanınıyor."], ["Önerimiz, mevcut otellerde birinci modelle başlamak, ikinci modeli ise ayrı bir modül olarak sunmak.", "Önerimiz, mevcut otellerde birinci modelle başlamak, ikinci modeli ise ayrı bir modül olarak sunmak."]]}, {"no": 18, "baslik": "Teknoloji yığını", "gorsel": "slides/s18.jpg", "cumleler": [["Teknoloji seçimlerimizde hız ve kanıtlanmışlık ön planda.", "Teknoloji seçimlerimizde hız ve kanıtlanmışlık ön planda."], ["Kiosk ve mobil uygulamayı tek bir kod tabanıyla, Flutter üzerinde geliştiriyoruz.", "Kiosk ve mobil uygulamayı tek bir kod tabanıyla, Flutter üzerinde geliştiriyoruz."], ["Arka tarafta açık kaynaklı, kendini kanıtlamış veritabanları ve servisler kullanıyoruz.", "Arka tarafta açık kaynaklı, kendini kanıtlamış veritabanları ve servisler kullanıyoruz."], ["Karekod anahtarlar endüstri standardı bir dijital imza yöntemiyle imzalanıyor ve kapıda internetsiz doğrulanıyor.", "Karekod anahtarlar endüstri standardı bir dijital imza yöntemiyle imzalanıyor ve kapıda internetsiz doğrulanıyor."], ["Yüz eşleştirmesi için bağımsız testlerde başarılı olmuş ticari bir yazılım kullanıyoruz ve lisansını yalnızca kiosk başına ödüyoruz.", "Yüz eşleştirmesi için bağımsız testlerde başarılı olmuş ticari bir yazılım kullanıyoruz ve lisansını yalnızca kiosk başına ödüyoruz."], ["Kapı ünitesinde ucuz ve pille çalışabilen bir mikrodenetleyici yeterli oluyor.", "Kapı ünitesinde ucuz ve pille çalışabilen bir mikrodenetleyici yeterli oluyor."], ["Bulutu, kişisel verilerin yurt dışına çıkmaması için Türkiye lokasyonlu seçiyoruz.", "Bulutu, kişisel verilerin yurt dışına çıkmaması için Türkiye lokasyonlu seçiyoruz."], ["Yapay zekâ asistanı da otelin kendi bilgi tabanıyla çalışıyor.", "Yapay zekâ asistanı da otelin kendi bilgi tabanıyla çalışıyor."]]}, {"no": 19, "baslik": "Hazır al mı, geliştir mi?", "gorsel": "slides/s19.jpg", "cumleler": [["Neyi hazır alıp neyi kendimiz geliştireceğimiz kritik bir karar.", "Neyi hazır alıp neyi kendimiz geliştireceğimiz kritik bir karar."], ["Kiosk kasası, mekanik kapı kilidi ve kablosuz erişim noktaları gibi donanımları hazır alıyoruz.", "Kiosk kasası, mekanik kapı kilidi ve kablosuz erişim noktaları gibi donanımları hazır alıyoruz."], ["Yüz eşleştirme yazılımını da lisanslıyoruz.", "Yüz eşleştirme yazılımını da lisanslıyoruz."], ["Kapıdaki karekod okuyucuda ise dikkat etmemiz gereken bir nokta var: piyasadaki hazır kilitlerin çoğu kendi kod formatını kullanıyor.", "Kapıdaki karekod okuyucuda ise dikkat etmemiz gereken bir nokta var: piyasadaki hazır kilitlerin çoğu kendi kod formatını kullanıyor."], ["Bu yüzden pilotta, dışarıya açık bir bağlantı arayüzü olan bir kilit seçip doğrulamayı kendimiz yapacağız; ölçek büyüdüğünde ise kendi modülümüzü üreteceğiz.", "Bu yüzden pilotta, dışarıya açık bir bağlantı arayüzü olan bir kilit seçip doğrulamayı kendimiz yapacağız; ölçek büyüdüğünde ise kendi modülümüzü üreteceğiz."], ["Karekod ve imza altyapısını, platform yazılımını ve bütün entegrasyonları kendimiz geliştiriyoruz.", "Karekod ve imza altyapısını, platform yazılımını ve bütün entegrasyonları kendimiz geliştiriyoruz."], ["Çünkü asıl değerimiz ve rakiplerden farkımız tam olarak bu yazılım ve deneyim katmanında.", "Çünkü asıl değerimiz ve rakiplerden farkımız tam olarak bu yazılım ve deneyim katmanında."]]}, {"no": 20, "baslik": "Yenilikçi özellikler: misafir deneyimi", "gorsel": "slides/s20.jpg", "cumleler": [["Platformu sadece bir giriş makinesi olarak görmüyoruz; misafir deneyimini baştan tasarlıyoruz.", "Platformu sadece bir giriş makinesi olarak görmüyoruz; misafir deneyimini baştan tasarlıyoruz."], ["Yirmiden fazla dil konuşan bir yapay zekâ resepsiyonist misafirin sorularını yanıtlıyor, çözemediği durumda da insana devrediyor.", "Yirmiden fazla dil konuşan bir yapay zekâ resepsiyonist misafirin sorularını yanıtlıyor, çözemediği durumda da insana devrediyor."], ["Merkezdeki tek bir görevli, görüntülü bağlantıyla aynı anda birden fazla oteli karşılayabiliyor.", "Merkezdeki tek bir görevli, görüntülü bağlantıyla aynı anda birden fazla oteli karşılayabiliyor."], ["Misafir, kat planı üzerinden odasını kendisi seçebiliyor.", "Misafir, kat planı üzerinden odasını kendisi seçebiliyor."], ["Oda yükseltme, geç çıkış ya da kahvaltı gibi teklifler doluluğa göre akıllıca fiyatlanıyor.", "Oda yükseltme, geç çıkış ya da kahvaltı gibi teklifler doluluğa göre akıllıca fiyatlanıyor."], ["Kapı açıldığında oda, misafiri ışıklar ve klimayla karşılıyor.", "Kapı açıldığında oda, misafiri ışıklar ve klimayla karşılıyor."], ["Bunlara ek olarak ziyaretçi karekodu, akıllı bagaj dolapları ve dijital konsiyerj gibi özellikler de var.", "Bunlara ek olarak ziyaretçi karekodu, akıllı bagaj dolapları ve dijital konsiyerj gibi özellikler de var."], ["Her kartın altında, o özelliğin hangi fazda geleceğini ve gelire mi yoksa maliyete mi katkı sağladığını görebilirsiniz.", "Her kartın altında, o özelliğin hangi fazda geleceğini ve gelire mi yoksa maliyete mi katkı sağladığını görebilirsiniz."]]}, {"no": 21, "baslik": "Yenilikçi özellikler: operasyon ve bina", "gorsel": "slides/s21.jpg", "cumleler": [["Operasyon tarafındaki hedefimiz, oteli kendi kendine işleyen bir sisteme dönüştürmek.", "Operasyon tarafındaki hedefimiz, oteli kendi kendine işleyen bir sisteme dönüştürmek."], ["Misafir çıkış yaptığı anda temizlik ekibine görev düşüyor; oda hazır olduğunda da bekleyen misafire haber veriliyor.", "Misafir çıkış yaptığı anda temizlik ekibine görev düşüyor; oda hazır olduğunda da bekleyen misafire haber veriliyor."], ["Oda boşken klima ve ışıklar tasarruf moduna geçiyor.", "Oda boşken klima ve ışıklar tasarruf moduna geçiyor."], ["Otopark bariyeri plakayı tanıyıp rezervasyonla eşleştiriyor.", "Otopark bariyeri plakayı tanıyıp rezervasyonla eşleştiriyor."], ["Misafir aynı anahtarla asansörde yalnızca kendi katına çıkıyor; spor salonu ve spa gibi alanlara giriyor.", "Misafir aynı anahtarla asansörde yalnızca kendi katına çıkıyor; spor salonu ve spa gibi alanlara giriyor."], ["Sistem, kilit pilleri ya da kiosk yazıcısındaki kâğıt bitmeden önce uyarıyor.", "Sistem, kilit pilleri ya da kiosk yazıcısındaki kâğıt bitmeden önce uyarıyor."], ["Yönetici, otelin kat planı üzerinde her odanın durumunu canlı olarak görüyor ve olumsuz bir geri bildirim geldiğinde anında haberdar oluyor.", "Yönetici, otelin kat planı üzerinde her odanın durumunu canlı olarak görüyor ve olumsuz bir geri bildirim geldiğinde anında haberdar oluyor."]]}, {"no": 22, "baslik": "Operasyon ve personel modeli", "gorsel": "slides/s22.jpg", "cumleler": [["Burada önemli bir noktanın altını çizmek istiyorum: resepsiyonsuz, insansız demek değil.", "Burada önemli bir noktanın altını çizmek istiyorum: resepsiyonsuz, insansız demek değil."], ["Misafirin sorunu, en hızlı çözülebileceği katmanda çözülüyor.", "Misafirin sorunu, en hızlı çözülebileceği katmanda çözülüyor."], ["İşlemlerin büyük çoğunluğu kiosk'ta ve telefonda bitiyor.", "İşlemlerin büyük çoğunluğu kiosk'ta ve telefonda bitiyor."], ["Sorusu olan misafire yapay zekâ asistanı anında yanıt veriyor.", "Sorusu olan misafire yapay zekâ asistanı anında yanıt veriyor."], ["Gerekirse bir dakikadan kısa sürede gerçek bir resepsiyonist görüntülü olarak bağlanıyor.", "Gerekirse bir dakikadan kısa sürede gerçek bir resepsiyonist görüntülü olarak bağlanıyor."], ["Fiziksel bir müdahale gerekiyorsa da saha görevlisi beş ile on dakika içinde misafirin yanında oluyor.", "Fiziksel bir müdahale gerekiyorsa da saha görevlisi beş ile on dakika içinde misafirin yanında oluyor."], ["Kırk odalı örnek otelimizde klasik modelin yıllık ön büro maliyeti yaklaşık altmış bin dolar; LOBİ modelinde ise bu rakam yaklaşık yirmi sekiz bin dolara iniyor.", "Kırk odalı örnek otelimizde klasik modelin yıllık ön büro maliyeti yaklaşık altmış bin dolar; Lobi modelinde ise bu rakam yaklaşık yirmi sekiz bin dolara iniyor."]]}, {"no": 23, "baslik": "İstisna senaryoları", "gorsel": "slides/s23.jpg", "cumleler": [["Böyle bir sistemde en çok sorulan soru şu: ya bir şeyler ters giderse?", "Böyle bir sistemde en çok sorulan soru şu: ya bir şeyler ters giderse?"], ["Bu senaryoların hepsini önceden düşündük.", "Bu senaryoların hepsini önceden düşündük."], ["Kimlik okunamazsa ya da yüz eşleşmezse görüntülü görevli devreye giriyor.", "Kimlik okunamazsa ya da yüz eşleşmezse görüntülü görevli devreye giriyor."], ["Biyometri istemeyen misafir, aynı anahtarı görevli onayıyla alıyor.", "Biyometri istemeyen misafir, aynı anahtarı görevli onayıyla alıyor."], ["Çocuklu ailelerde çocuk, ebeveynin kaydına bağlanıyor.", "Çocuklu ailelerde çocuk, ebeveynin kaydına bağlanıyor."], ["Elektrik ya da internet kesilirse kiosk yedek güçle ve mobil hatla çalışıyor; kapılar ise pille ve internetsiz açılmaya devam ediyor.", "Elektrik ya da internet kesilirse kiosk yedek güçle ve mobil hatla çalışıyor; kapılar ise pille ve internetsiz açılmaya devam ediyor."], ["Karekodun ekran görüntüsü paylaşılırsa otuz saniye içinde geçersiz oluyor.", "Karekodun ekran görüntüsü paylaşılırsa otuz saniye içinde geçersiz oluyor."], ["Telefon kaybolursa kiosk'ta yeni anahtar alınıyor.", "Telefon kaybolursa kiosk'ta yeni anahtar alınıyor."], ["Tekrarlayan başarısız denemelerde de kapı kilitleniyor ve görevliye alarm gidiyor.", "Tekrarlayan başarısız denemelerde de kapı kilitleniyor ve görevliye alarm gidiyor."]]}, {"no": 24, "baslik": "Yol haritası", "gorsel": "slides/s24.jpg", "cumleler": [["Yol haritamız on sekiz ayı kapsıyor.", "Yol haritamız on sekiz ayı kapsıyor."], ["İlk iki ay keşif ve tasarım: hukuki görüş, pilot tesis seçimi, tedarikçi görüşmeleri ve kullanıcı testleri.", "İlk iki ay keşif ve tasarım: hukuki görüş, pilot tesis seçimi, tedarikçi görüşmeleri ve kullanıcı testleri."], ["İkinci ile altıncı aylar arasında ilk sürümü geliştirip on ile yirmi odalık bir pilotta canlıya alıyoruz.", "İkinci ile altıncı aylar arasında ilk sürümü geliştirip on ile yirmi odalık bir pilotta canlıya alıyoruz."], ["Bu sürümde kiosk, kimlik ve yüz eşleştirme, yasal bildirim, ödeme, karekod anahtar, otel programı ve internet entegrasyonu var.", "Bu sürümde kiosk, kimlik ve yüz eşleştirme, yasal bildirim, ödeme, karekod anahtar, otel programı ve internet entegrasyonu var."], ["Altıncı ile dokuzuncu aylar arasında misafir uygulaması, ön check-in ve cüzdan anahtarı geliyor.", "Altıncı ile dokuzuncu aylar arasında misafir uygulaması, ön check-in ve cüzdan anahtarı geliyor."], ["Dokuzuncu ile on beşinci aylar arasında oteli akıllandırıyoruz: oda otomasyonu, yapay zekâ asistanı, enerji yönetimi ve kendi hotspot sistemimiz.", "Dokuzuncu ile on beşinci aylar arasında oteli akıllandırıyoruz: oda otomasyonu, yapay zekâ asistanı, enerji yönetimi ve kendi hotspot sistemimiz."], ["On beşinci aydan itibaren de ürünü çok tesisli bir abonelik platformuna dönüştürüp yeni otellere açılıyoruz.", "On beşinci aydan itibaren de ürünü çok tesisli bir abonelik platformuna dönüştürüp yeni otellere açılıyoruz."]]}, {"no": 25, "baslik": "İlk sürümün kapsamı", "gorsel": "slides/s25.jpg", "cumleler": [["İlk sürümün kapsamını net tutmak çok önemli.", "İlk sürümün kapsamını net tutmak çok önemli."], ["Olmazsa olmazlarımız şunlar: kiosk'ta rezervasyon bulma, kimlik okuma, canlılık testi ve yüz eşleştirme, yasal bildirim ve ödeme, telefonda ve kâğıtta karekod anahtar, kapıda karekod okuyucu ve PIN, bir otel programı entegrasyonu, görüntülü destek, e-arşiv fatura ve yönetim panelinin ilk hali.", "Olmazsa olmazlarımız şunlar: kiosk'ta rezervasyon bulma, kimlik okuma, canlılık testi ve yüz eşleştirme, yasal bildirim ve ödeme, telefonda ve kâğıtta karekod anahtar, kapıda karekod okuyucu ve pin, bir otel programı entegrasyonu, görüntülü destek, e-arşiv fatura ve yönetim panelinin ilk hali."], ["Olsa iyi olur dediklerimiz arasında cüzdan anahtarı, internet entegrasyonu, ön check-in ve beş dil desteği var.", "Olsa iyi olur dediklerimiz arasında cüzdan anahtarı, internet entegrasyonu, ön check-in ve beş dil desteği var."], ["Yapay zekâ asistanı ve oda seçimi gibi özellikler ise zaman kalırsa giriyor.", "Yapay zekâ asistanı ve oda seçimi gibi özellikler ise zaman kalırsa giriyor."], ["Yüzle kapı açma, kendi kilit donanımımız ve uzun süreli biyometri saklama, bilinçli olarak ilk sürümün dışında tutuluyor.", "Yüzle kapı açma, kendi kilit donanımımız ve uzun süreli biyometri saklama, bilinçli olarak ilk sürümün dışında tutuluyor."]]}, {"no": 26, "baslik": "Ekip ve bütçe", "gorsel": "slides/s26.jpg", "cumleler": [["İlk sürüm için on ile on iki kişilik çekirdek bir ekip öngörüyoruz: ürün yöneticisi, tasarımcı, arka uç ve mobil geliştiriciler, gömülü sistem uzmanı, güvenlik ve biyometri uzmanı, operasyon ve test mühendisleri.", "İlk sürüm için on ile on iki kişilik çekirdek bir ekip öngörüyoruz: ürün yöneticisi, tasarımcı, arka uç ve mobil geliştiriciler, gömülü sistem uzmanı, güvenlik ve biyometri uzmanı, operasyon ve test mühendisleri."], ["Kırk odalı örnek bir otel için tek seferlik yatırım yaklaşık yirmi sekiz ile altmış üç bin dolar arasında.", "Kırk odalı örnek bir otel için tek seferlik yatırım yaklaşık yirmi sekiz ile altmış üç bin dolar arasında."], ["Bunun içinde iki kiosk, kırk kapı ünitesi, ağ altyapısı ve kurulum var.", "Bunun içinde iki kiosk, kırk kapı ünitesi, ağ altyapısı ve kurulum var."], ["Kendi hotspot sistemimizi isteyen otel için birkaç bin dolarlık ek bir maliyet çıkıyor.", "Kendi hotspot sistemimizi isteyen otel için birkaç bin dolarlık ek bir maliyet çıkıyor."], ["Yıllık yazılım lisansları ve bulut giderleri de toplamda yaklaşık on bin dolar civarında.", "Yıllık yazılım lisansları ve bulut giderleri de toplamda yaklaşık on bin dolar civarında."], ["Bu rakamların kaba tahmin olduğunu ve tedarikçi teklifleriyle netleşeceğini de belirtmek isterim.", "Bu rakamların kaba tahmin olduğunu ve tedarikçi teklifleriyle netleşeceğini de belirtmek isterim."]]}, {"no": 27, "baslik": "İş modeli", "gorsel": "slides/s27.jpg", "cumleler": [["İş modelimiz iki aşamalı.", "İş modelimiz iki aşamalı."], ["Önce kendi tesisimizde personel maliyetini düşürüp ek satışlarla gelirimizi artırarak sistemi kanıtlıyoruz; bu tesis aynı zamanda ürünün canlı vitrini oluyor.", "Önce kendi tesisimizde personel maliyetini düşürüp ek satışlarla gelirimizi artırarak sistemi kanıtlıyoruz; bu tesis aynı zamanda ürünün canlı vitrini oluyor."], ["Ardından platformu diğer otellere abonelik modeliyle sunuyoruz.", "Ardından platformu diğer otellere abonelik modeliyle sunuyoruz."], ["Gelir kalemlerimiz şunlar: kurulum ya da donanım kiralama, oda başına aylık abonelik, kablosuz internet ve otel programı gibi ek modüller, ekstra satış komisyonları ve uzaktan resepsiyon hizmeti.", "Gelir kalemlerimiz şunlar: kurulum ya da donanım kiralama, oda başına aylık abonelik, kablosuz internet ve otel programı gibi ek modüller, ekstra satış komisyonları ve uzaktan resepsiyon hizmeti."], ["Örneğin oda başına aylık yedi dolarlık bir abonelikle, yüz otelden yılda yaklaşık üç yüz otuz altı bin dolarlık tekrarlayan gelir elde ediliyor.", "Örneğin oda başına aylık yedi dolarlık bir abonelikle, yüz otelden yılda yaklaşık üç yüz otuz altı bin dolarlık tekrarlayan gelir elde ediliyor."], ["Hedef müşterilerimiz butik oteller, apart ve rezidanslar, şehir otelleri, hosteller ve gece geç girişlerin yoğun olduğu tesisler.", "Hedef müşterilerimiz butik oteller, apart ve rezidanslar, şehir otelleri, hosteller ve gece geç girişlerin yoğun olduğu tesisler."]]}, {"no": 28, "baslik": "Örnek getiri hesabı", "gorsel": "slides/s28.jpg", "cumleler": [["Şimdi rakamlara bakalım.", "Şimdi rakamlara bakalım."], ["Kırk odalı, yüzde yetmiş dolulukla çalışan bir otelde klasik ön büronun yıllık maliyeti yaklaşık altmış bin dolar.", "Kırk odalı, yüzde yetmiş dolulukla çalışan bir otelde klasik ön büronun yıllık maliyeti yaklaşık altmış bin dolar."], ["LOBİ modelinde, personel ve yazılım giderleri dahil, bu rakam yirmi sekiz bin dolara iniyor; yani yüzde elli üç tasarruf.", "Lobi modelinde, personel ve yazılım giderleri dahil, bu rakam yirmi sekiz bin dolara iniyor; yani yüzde elli üç tasarruf."], ["Buna ekstra satışlardan gelen yaklaşık yedi bin yedi yüz dolarlık ek geliri eklediğimizde, yıllık net fayda kırk bin dolara yaklaşıyor.", "Buna ekstra satışlardan gelen yaklaşık yedi bin yedi yüz dolarlık ek geliri eklediğimizde, yıllık net fayda kırk bin dolara yaklaşıyor."], ["Tek seferlik yatırım yirmi sekiz ile altmış üç bin dolar arasında olduğu için sistem kendini sekiz ile on dokuz ay arasında ödüyor.", "Tek seferlik yatırım yirmi sekiz ile altmış üç bin dolar arasında olduğu için sistem kendini sekiz ile on dokuz ay arasında ödüyor."], ["Üstelik enerji tasarrufunu ve gece kazanılan rezervasyonları bu hesaba katmadık bile.", "Üstelik enerji tasarrufunu ve gece kazanılan rezervasyonları bu hesaba katmadık bile."]]}, {"no": 29, "baslik": "Pazar ve konumlandırma", "gorsel": "slides/s29.jpg", "cumleler": [["Pazara baktığımızda, dünyada self check-in kioskları ve mobil anahtarlar giderek yaygınlaşıyor.", "Pazara baktığımızda, dünyada self check-in kioskları ve mobil anahtarlar giderek yaygınlaşıyor."], ["Ancak bugün kiosk yazılımı, kapı kilidi, internet ve otel programı genellikle ayrı firmalardan geliyor ve bunları birbirine bağlama yükü otelin sırtında kalıyor.", "Ancak bugün kiosk yazılımı, kapı kilidi, internet ve otel programı genellikle ayrı firmalardan geliyor ve bunları birbirine bağlama yükü otelin sırtında kalıyor."], ["Küçük tesisler için uygun fiyatlı ve Türkiye mevzuatına hazır bir paket ise neredeyse yok.", "Küçük tesisler için uygun fiyatlı ve Türkiye mevzuatına hazır bir paket ise neredeyse yok."], ["LOBİ tam olarak bu boşluğa konumlanıyor.", "Lobi tam olarak bu boşluğa konumlanıyor."], ["Kiosk, kapı, uygulama, internet ve panel tek platformda.", "Kiosk, kapı, uygulama, internet ve panel tek platformda."], ["Kimlik Bildirme Sistemi, e-fatura ve kişisel veri mevzuatına hazır.", "Kimlik Bildirme Sistemi, e-fatura ve kişisel veri mevzuatına hazır."], ["Üstelik internetsiz çalışan güvenli karekod anahtar ve uzaktan resepsiyon hizmeti de pakete dahil.", "Üstelik internetsiz çalışan güvenli karekod anahtar ve uzaktan resepsiyon hizmeti de pakete dahil."]]}, {"no": 30, "baslik": "Başarı ölçütleri", "gorsel": "slides/s30.jpg", "cumleler": [["Pilotta başarıyı somut ölçütlerle takip edeceğiz.", "Pilotta başarıyı somut ölçütlerle takip edeceğiz."], ["Ortalama giriş süresi doksan saniyenin altında olmalı.", "Ortalama giriş süresi doksan saniyenin altında olmalı."], ["Misafirlerin yüzde doksanından fazlası işlemini görevliye ihtiyaç duymadan tamamlamalı.", "Misafirlerin yüzde doksanından fazlası işlemini görevliye ihtiyaç duymadan tamamlamalı."], ["Kapı bir saniyeden kısa sürede açılmalı ve karekodların yüzde doksan sekizden fazlası ilk denemede okunmalı.", "Kapı bir saniyeden kısa sürede açılmalı ve karekodların yüzde doksan sekizden fazlası ilk denemede okunmalı."], ["Sistemin erişilebilirliği yüzde doksan dokuz virgül dokuz olmalı.", "Sistemin erişilebilirliği yüzde doksan dokuz virgül dokuz olmalı."], ["Misafir memnuniyeti puanımızın ellinin, ekstra satış dönüşümümüzün de yüzde onun üzerinde olmasını hedefliyoruz.", "Misafir memnuniyeti puanımızın ellinin, ekstra satış dönüşümümüzün de yüzde onun üzerinde olmasını hedefliyoruz."], ["En önemlisi de dolu oda başına ön büro maliyetini en az yarı yarıya düşürmek istiyoruz.", "En önemlisi de dolu oda başına ön büro maliyetini en az yarı yarıya düşürmek istiyoruz."]]}, {"no": 31, "baslik": "Riskler ve önlemler", "gorsel": "slides/s31.jpg", "cumleler": [["Elbette riskler de var ve bunları en baştan yönetmek istiyoruz.", "Elbette riskler de var ve bunları en baştan yönetmek istiyoruz."], ["En yüksek etkili risk mevzuat; bu yüzden ilk iş hukuki görüş alacağız.", "En yüksek etkili risk mevzuat; bu yüzden ilk iş hukuki görüş alacağız."], ["Teknik arızalara karşı kapılar internetsiz çalışıyor ve her zaman bir PIN yedeği var.", "Teknik arızalara karşı kapılar internetsiz çalışıyor ve her zaman bir pin yedeği var."], ["Siber saldırılara karşı şifreleme, ağ ayrımı ve düzenli testler uyguluyoruz.", "Siber saldırılara karşı şifreleme, ağ ayrımı ve düzenli testler uyguluyoruz."], ["Teknolojiye uzak misafirler için sade bir arayüz ve her ekranda görüntülü insan desteği sunuyoruz.", "Teknolojiye uzak misafirler için sade bir arayüz ve her ekranda görüntülü insan desteği sunuyoruz."], ["Karekodun kopyalanmasına karşı imzalı ve sürekli değişen kodlar kullanıyoruz.", "Karekodun kopyalanmasına karşı imzalı ve sürekli değişen kodlar kullanıyoruz."], ["Tedarikçi bağımlılığına karşı da açık standartlarla ve birden fazla kilit, yazılım ve otel programını destekleyen bir mimariyle ilerliyoruz.", "Tedarikçi bağımlılığına karşı da açık standartlarla ve birden fazla kilit, yazılım ve otel programını destekleyen bir mimariyle ilerliyoruz."]]}, {"no": 32, "baslik": "Sonraki adımlar", "gorsel": "slides/s32.jpg", "cumleler": [["Önümüzdeki sekiz hafta için planımız net.", "Önümüzdeki sekiz hafta için planımız net."], ["İlk üç haftada hukuki ön görüşü alıyoruz.", "İlk üç haftada hukuki ön görüşü alıyoruz."], ["Paralel olarak pilot tesisi ve oda sayısını belirliyoruz.", "Paralel olarak pilot tesisi ve oda sayısını belirliyoruz."], ["Kiosk, kilit, yüz eşleştirme yazılımı ve kablosuz internet için en az üçer teklif topluyoruz.", "Kiosk, kilit, yüz eşleştirme yazılımı ve kablosuz internet için en az üçer teklif topluyoruz."], ["Ardından tıklanabilir bir prototiple gerçek misafirler üzerinde kullanıcı testi yapıyor, sekizinci haftada da bütçe ve ekip onayıyla ilk faza başlıyoruz.", "Ardından tıklanabilir bir prototiple gerçek misafirler üzerinde kullanıcı testi yapıyor, sekizinci haftada da bütçe ve ekip onayıyla ilk faza başlıyoruz."], ["Bu süreçte vermemiz gereken dört karar var.", "Bu süreçte vermemiz gereken dört karar var."], ["Önce kendi otelimizle mi başlayacağız?", "Önce kendi otelimizle mi başlayacağız?"], ["Kapıda hazır kilit mi kullanacağız, yoksa kendi modülümüzü mü?", "Kapıda hazır kilit mi kullanacağız, yoksa kendi modülümüzü mü?"], ["İnternette entegrasyon mu, kendi sistemimiz mi?", "İnternette entegrasyon mu, kendi sistemimiz mi?"], ["Donanımı satacak mıyız, yoksa kiralayacak mıyız?", "Donanımı satacak mıyız, yoksa kiralayacak mıyız?"], ["Hedefimiz şu: altıncı ayın sonunda pilot otelimizdeki ilk misafir, resepsiyona hiç uğramadan odasına girecek.", "Hedefimiz şu: altıncı ayın sonunda pilot otelimizdeki ilk misafir, resepsiyona hiç uğramadan odasına girecek."]]}, {"no": 33, "baslik": "Kapanış", "gorsel": "slides/s33.jpg", "cumleler": [["Kuyruk yok, anahtar yok; sadece hoş geldiniz.", "Kuyruk yok, anahtar yok; sadece hoş geldiniz."], ["LOBİ ile misafirlerimize daha hızlı ve daha özgür bir deneyim, otellerimize de daha verimli bir işletme sunmayı hedefliyoruz.", "Lobi ile misafirlerimize daha hızlı ve daha özgür bir deneyim, otellerimize de daha verimli bir işletme sunmayı hedefliyoruz."], ["Bu taslak tartışmaya açık; görüş ve önerilerinizi duymaktan memnuniyet duyarım.", "Bu taslak tartışmaya açık; görüş ve önerilerinizi duymaktan memnuniyet duyarım."], ["Dinlediğiniz için teşekkür ederim.", "Dinlediğiniz için teşekkür ederim."]]}];
+
+const $ = (id) => document.getElementById(id);
+const img = $("slayt"), altyazi = $("altyazi"), baslik = $("baslik"), sayac = $("sayac");
+const oynatBtn = $("oynat"), baslatBtn = $("baslat"), hizSec = $("hiz"), sesSec = $("ses");
+const destek = "speechSynthesis" in window && "SpeechSynthesisUtterance" in window;
+const sentez = destek ? window.speechSynthesis : null;
+
+let i = 0, j = 0, caliyor = false, bitti = false, aktif = null, zamanlayici = null, ses = null, kilit = null;
+let turkceSesler = [];
+
+const sakla = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
+const oku = (k) => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+
+const ikiHane = (n) => String(n).padStart(2, "0");
+
+const bolumler = $("bolumler");
+SLAYTLAR.forEach((s, k) => {
+  const b = document.createElement("button");
+  b.type = "button";
+  b.title = `${s.no}. ${s.baslik}`;
+  b.setAttribute("aria-label", `Slayt ${s.no}: ${s.baslik}`);
+  b.addEventListener("click", () => git(k));
+  bolumler.appendChild(b);
+});
+SLAYTLAR.forEach((s) => { const on = new Image(); on.src = s.gorsel; });
+
+function ciz() {
+  const s = SLAYTLAR[i];
+  img.classList.add("fade");
+  img.src = s.gorsel;
+  img.alt = `Slayt ${s.no}: ${s.baslik}`;
+  img.onload = () => img.classList.remove("fade");
+  baslik.textContent = `Slayt ${s.no} · ${s.baslik}`;
+  sayac.textContent = `${ikiHane(s.no)} / ${SLAYTLAR.length}`;
+  [...bolumler.children].forEach((b, k) => {
+    b.classList.toggle("now", k === i);
+    b.classList.toggle("done", k < i);
+  });
+  if (!caliyor) altyazi.textContent = s.cumleler[0][0];
+}
+
+function dugme() {
+  const etiket = caliyor ? "Duraklat" : (bitti ? "Baştan başlat" : (i || j ? "Devam et" : "Başlat"));
+  const yol = caliyor ? "M7 5h4v14H7zM13 5h4v14h-4z" : "M8 5v14l11-7z";
+  oynatBtn.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="${yol}"/></svg><span>${etiket}</span>`;
+}
+
+function konus() {
+  if (!caliyor) return;
+  const s = SLAYTLAR[i];
+  if (j >= s.cumleler.length) {
+    if (i < SLAYTLAR.length - 1) {
+      zamanlayici = setTimeout(() => { i++; j = 0; ciz(); konus(); }, 900);
+    } else {
+      caliyor = false; bitti = true;
+      altyazi.textContent = "Sunum bitti. Dinlediğiniz için teşekkürler.";
+      kilidiBirak(); dugme();
+    }
+    return;
+  }
+  const [goster, metin] = s.cumleler[j];
+  altyazi.textContent = goster;
+  if (!sentez) return;
+  const u = new SpeechSynthesisUtterance(metin);
+  u.lang = "tr-TR";
+  if (ses) u.voice = ses;
+  u.rate = parseFloat(hizSec.value);
+  u.pitch = 1;
+  u.onend = () => { if (u !== aktif) return; j++; zamanlayici = setTimeout(konus, 280); };
+  u.onerror = (e) => {
+    if (u !== aktif || e.error === "interrupted" || e.error === "canceled") return;
+    j++; zamanlayici = setTimeout(konus, 280);
+  };
+  aktif = u;
+  sentez.speak(u);
+}
+
+function sustur() {
+  clearTimeout(zamanlayici);
+  aktif = null;
+  if (sentez) sentez.cancel();
+}
+
+function oynat() {
+  if (bitti) { i = 0; j = 0; bitti = false; ciz(); }
+  caliyor = true;
+  baslatBtn.hidden = true;
+  sustur();
+  kilitAl();
+  dugme();
+  setTimeout(konus, 80);
+}
+
+function duraklat() {
+  caliyor = false;
+  sustur();
+  kilidiBirak();
+  dugme();
+}
+
+function git(k) {
+  if (k < 0 || k >= SLAYTLAR.length) return;
+  sustur();
+  i = k; j = 0; bitti = false;
+  ciz();
+  if (caliyor) setTimeout(konus, 80); else dugme();
+}
+
+async function kilitAl() {
+  try { if ("wakeLock" in navigator) kilit = await navigator.wakeLock.request("screen"); } catch (e) { kilit = null; }
+}
+function kilidiBirak() { try { if (kilit) kilit.release(); } catch (e) {} kilit = null; }
+
+function puan(v) {
+  const ad = v.name;
+  let p = 0;
+  if (/Emel/i.test(ad)) p += 100;
+  else if (/Yelda/i.test(ad)) p += 90;
+  else if (/Seda|Filiz|Female|Kadın/i.test(ad)) p += 80;
+  else if (/Google/i.test(ad)) p += 60;
+  if (/Natural|Neural|Online|Enhanced|Premium|Gelişmiş/i.test(ad)) p += 20;
+  if (/Ahmet|Tolga|Cem|Male|Erkek/i.test(ad)) p -= 60;
+  return p;
+}
+
+function sesleriYukle(son) {
+  if (!sentez) return;
+  const hepsi = sentez.getVoices();
+  turkceSesler = hepsi.filter((v) => /^tr([-_]|$)/i.test(v.lang)).sort((a, b) => puan(b) - puan(a));
+  sesSec.innerHTML = "";
+  if (!turkceSesler.length) {
+    sesSec.innerHTML = '<option value="">Türkçe ses bulunamadı</option>';
+    ses = null;
+    if (!son && !hepsi.length) return;
+    durum("warn", "Bu tarayıcıda Türkçe ses yok");
+    uyari("Bu tarayıcıda Türkçe ses bulunamadı; anlatım yanlış dilde okunabilir. Sayfayı bilgisayarda Microsoft Edge ile ya da telefonunuzda açın. Altyazılar her durumda görünür.");
+    return;
+  }
+  turkceSesler.forEach((v, k) => {
+    const o = document.createElement("option");
+    o.value = String(k);
+    o.textContent = v.name.replace(/\s*-\s*Turkish.*$/i, "").replace(/^Microsoft\s+/, "");
+    sesSec.appendChild(o);
+  });
+  const kayitli = oku("lobi-ses");
+  const k = Math.max(0, turkceSesler.findIndex((v) => v.name === kayitli));
+  sesSec.value = String(k);
+  ses = turkceSesler[k];
+  durum("ok", "Ses: " + sesSec.options[sesSec.selectedIndex].textContent);
+  uyari("");
+}
+
+function durum(tur, metin) {
+  const c = $("durum");
+  c.className = "chip " + tur;
+  c.querySelector("span").textContent = metin;
+}
+function uyari(metin) { const u = $("uyari"); u.textContent = metin; u.hidden = !metin; }
+
+oynatBtn.addEventListener("click", () => (caliyor ? duraklat() : oynat()));
+baslatBtn.addEventListener("click", oynat);
+$("onceki").addEventListener("click", () => git(i - 1));
+$("sonraki").addEventListener("click", () => git(i + 1));
+hizSec.addEventListener("change", () => {
+  sakla("lobi-hiz", hizSec.value);
+  if (caliyor) { sustur(); setTimeout(konus, 80); }
+});
+sesSec.addEventListener("change", () => {
+  ses = turkceSesler[parseInt(sesSec.value, 10)] || null;
+  if (ses) { sakla("lobi-ses", ses.name); durum("ok", "Ses: " + sesSec.options[sesSec.selectedIndex].textContent); }
+  if (caliyor) { sustur(); setTimeout(konus, 80); }
+});
+document.addEventListener("keydown", (e) => {
+  if (e.target.closest("select")) return;
+  if (e.key === " " || e.code === "Space") { e.preventDefault(); caliyor ? duraklat() : oynat(); }
+  else if (e.key === "ArrowRight") git(i + 1);
+  else if (e.key === "ArrowLeft") git(i - 1);
+});
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible" && caliyor) kilitAl(); });
+
+const hizKayit = oku("lobi-hiz");
+if (hizKayit && [...hizSec.options].some((o) => o.value === hizKayit)) hizSec.value = hizKayit;
+
+if (destek) {
+  sesleriYukle();
+  sentez.addEventListener?.("voiceschanged", () => sesleriYukle());
+  setTimeout(() => { if (!turkceSesler.length) sesleriYukle(true); }, 1500);
+} else {
+  durum("warn", "Tarayıcı sesli okumayı desteklemiyor");
+  uyari("Bu tarayıcı sesli okumayı desteklemiyor. Sayfayı güncel bir Edge, Chrome ya da Safari ile açın. Altyazılar ve slaytlar yine de ilerletilebilir.");
+}
+ciz();
+dugme();
+</script>
